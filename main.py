@@ -6,7 +6,7 @@ import PIL.Image
 image = PIL.Image.open('C://Users//Lucius//Documents//Projects//pythonBackend//Screenshot 2025-02-19 094141.png')
 
 # Initialize Gemini client with API key
-client = genai.Client(api_key="AIzaSyDdEbCr1y6Azff9_vsWHtvDPk0yMJzW1T4")
+client = genai.Client(api_key="")
 
 # Define the structured prompt
 prompt = """
