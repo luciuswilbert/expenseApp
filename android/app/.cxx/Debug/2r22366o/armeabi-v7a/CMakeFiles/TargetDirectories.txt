@@ -1,0 +1,2 @@
+C:/Users/PRO/OffOndriveProjects/STT/ui_builder_io/ui/android/app/.cxx/Debug/2r22366o/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/PRO/OffOndriveProjects/STT/ui_builder_io/ui/android/app/.cxx/Debug/2r22366o/armeabi-v7a/CMakeFiles/rebuild_cache.dir
