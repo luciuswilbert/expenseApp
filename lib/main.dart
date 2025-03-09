@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ui/onboarding.dart';
 import 'splash_screen.dart';
 import 'transaction_page.dart';
-
+import 'custom_bottom_navigation_bar.dart';
 void main() => runApp(const MyApp());
 final List<Map<String, dynamic>> transactions = [
   {
@@ -73,6 +73,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _isBalanceVisible = true;
+
+  int _selectedIndex = 0; // Track the selected tab
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   // Function to show a dialog with the description (explained in Step 3)
   void _showDescriptionDialog(BuildContext context, String description, Color color, Color iconColor) {
@@ -248,78 +256,9 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // **Bottom Navigation Bar**
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(boxShadow: <BoxShadow>[
-            BoxShadow(
-              color: const Color.fromARGB(64, 0, 0, 0),
-              blurRadius: 15,
-            ),
-          ],),
-        child: BottomAppBar(
-          shape: const CircularNotchedRectangle(),
-          notchMargin: 12.0,
-          color:Colors.white,// Color(0xFFF0E68C),  
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children:[
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
-                  print("Home tapped");
-                },
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(Icons.home, color: Color(0xffDAA520)),
-                    Text('Home', style: TextStyle(color: Color(0xffDAA520))),
-                  ],
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => TransactionPage()));
-                  print("Transaction tapped");
-                },
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(Icons.receipt, color: Colors.grey),
-                    Text('Transaction', style: TextStyle(color: Colors.grey)),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 80), // Space for FAB
-              GestureDetector(
-                onTap: () {
-                  print("Summary tapped");
-                },
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(Icons.pie_chart, color: Colors.grey),
-                    Text('Summary', style: TextStyle(color: Colors.grey)),
-                  ],
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  print("Profile tapped");
-                },
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(Icons.person, color: Colors.grey),
-                    Text('Profile', style: TextStyle(color: Colors.grey)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }
