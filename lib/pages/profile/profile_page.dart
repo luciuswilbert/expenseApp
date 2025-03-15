@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'account_info_page.dart'; // Import the Account Info Page
-
-import 'package:expense_app_project/pages/Notification/notification_page.dart';
-
 import 'package:expense_app_project/widgets/curved_bottom_container.dart';
-
 import 'package:expense_app_project/widgets/logout_dialog.dart';
-
 import 'package:expense_app_project/pages/profile/settings_page.dart';
+import 'package:expense_app_project/widgets/custom_notification.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -119,22 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
 
-        /// Notification Button (Keeps Alignment)
-        Positioned(
-          top: 50,
-          right: 16,
-          child: IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.black),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const NotificationPage(),
-                ),
-              );
-            },
-          ),
-        ),
+        const NotificationButton(),
       ],
     );
   }

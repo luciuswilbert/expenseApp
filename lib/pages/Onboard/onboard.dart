@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:expense_app_project/pages/profile/profile_page.dart';
 import 'package:expense_app_project/main.dart';
 
 class OnboardingScreen extends StatefulWidget {

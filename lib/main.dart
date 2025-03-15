@@ -1,8 +1,10 @@
 import 'package:expense_app_project/pages/Onboard/onboard.dart';
+import 'package:expense_app_project/pages/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_app_project/pages/profile/profile_page.dart';
 import 'package:expense_app_project/widgets/bottom_nav_bar.dart';
 import 'package:expense_app_project/pages/Onboard/splash_screen.dart';
+import 'package:expense_app_project/pages/transaction/transaction_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,7 +37,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 3;
+  int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -66,9 +68,9 @@ class _MainScreenState extends State<MainScreen> {
   Widget _getSelectedPage(int index) {
     switch (index) {
       case 0:
-        return const Center(child: Text("Home (Coming Soon)"));
+        return const Center(child: HomePage());
       case 1:
-        return const Center(child: Text("Transaction (Coming Soon)"));
+        return TransactionPage();
       case 2:
         return const Center(child: Text("Summary (Coming Soon)"));
       case 3:
