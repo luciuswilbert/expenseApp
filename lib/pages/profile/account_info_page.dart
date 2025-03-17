@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'account_info_edit_page.dart';
-
-import 'package:expense_app_project/pages/Notification/notification_page.dart';
+import 'package:expense_app_project/widgets/custom_back_button.dart';
 
 class AccountInfoPage extends StatefulWidget {
   const AccountInfoPage({Key? key}) : super(key: key);
@@ -26,37 +25,31 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xffDAA520), // Goldenrod color
         automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        title: Stack(
+          alignment: Alignment.center, // ✅ Ensures the title stays centered
           children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+            /// ✅ Back Button (Left-Aligned)
+            const Positioned(
+              left: 0,
+              child: CustomBackButton(),
             ),
-            const Text(
-              "Account Info",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+
+            /// ✅ Centered Title
+            const Align(
+              alignment: Alignment.center,
+              child: Text(
+                "Account Info",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.notifications, color: Colors.black),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const NotificationPage(),
-                  ),
-                );
-              },
             ),
           ],
         ),
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

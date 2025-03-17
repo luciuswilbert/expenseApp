@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-import 'package:expense_app_project/pages/Notification/notification_page.dart';
-
 import 'package:expense_app_project/widgets/custom_text_field.dart';
 import 'package:expense_app_project/widgets/custom_password_field.dart';
 import 'package:expense_app_project/widgets/custom_date_picker.dart';
 import 'package:expense_app_project/widgets/custom_dropdown.dart';
+import 'package:expense_app_project/widgets/custom_back_button.dart';
 
 class AccountInfoEditPage extends StatefulWidget {
   const AccountInfoEditPage({Key? key}) : super(key: key);
@@ -33,159 +32,8 @@ class _AccountInfoEditPageState extends State<AccountInfoEditPage> {
     text: "mySecret123",
   );
 
-  
-  final List<String> _countries = [
-    "Afghanistan",
-    "Albania",
-    "Algeria",
-    "Andorra",
-    "Angola",
-    "Argentina",
-    "Armenia",
-    "Australia",
-    "Austria",
-    "Azerbaijan",
-    "Bahamas",
-    "Bahrain",
-    "Bangladesh",
-    "Belarus",
-    "Belgium",
-    "Belize",
-    "Benin",
-    "Bhutan",
-    "Bolivia",
-    "Botswana",
-    "Brazil",
-    "Brunei",
-    "Bulgaria",
-    "Burkina Faso",
-    "Burundi",
-    "Cambodia",
-    "Cameroon",
-    "Canada",
-    "Chad",
-    "Chile",
-    "China",
-    "Colombia",
-    "Comoros",
-    "Costa Rica",
-    "Croatia",
-    "Cuba",
-    "Cyprus",
-    "Czech Republic",
-    "Denmark",
-    "Djibouti",
-    "Dominican Republic",
-    "Ecuador",
-    "Egypt",
-    "El Salvador",
-    "Estonia",
-    "Ethiopia",
-    "Fiji",
-    "Finland",
-    "France",
-    "Gabon",
-    "Gambia",
-    "Georgia",
-    "Germany",
-    "Ghana",
-    "Greece",
-    "Guatemala",
-    "Honduras",
-    "Hungary",
-    "Iceland",
-    "India",
-    "Indonesia",
-    "Iran",
-    "Iraq",
-    "Ireland",
-    "Israel",
-    "Italy",
-    "Jamaica",
-    "Japan",
-    "Jordan",
-    "Kazakhstan",
-    "Kenya",
-    "Kuwait",
-    "Laos",
-    "Latvia",
-    "Lebanon",
-    "Libya",
-    "Lithuania",
-    "Luxembourg",
-    "Madagascar",
-    "Malaysia",
-    "Maldives",
-    "Mali",
-    "Malta",
-    "Mexico",
-    "Moldova",
-    "Monaco",
-    "Mongolia",
-    "Montenegro",
-    "Morocco",
-    "Mozambique",
-    "Myanmar",
-    "Namibia",
-    "Nepal",
-    "Netherlands",
-    "New Zealand",
-    "Nicaragua",
-    "Niger",
-    "Nigeria",
-    "North Korea",
-    "Norway",
-    "Oman",
-    "Pakistan",
-    "Palestine",
-    "Panama",
-    "Papua New Guinea",
-    "Paraguay",
-    "Peru",
-    "Philippines",
-    "Poland",
-    "Portugal",
-    "Qatar",
-    "Romania",
-    "Russia",
-    "Rwanda",
-    "Saudi Arabia",
-    "Senegal",
-    "Serbia",
-    "Singapore",
-    "Slovakia",
-    "Slovenia",
-    "Somalia",
-    "South Africa",
-    "South Korea",
-    "Spain",
-    "Sri Lanka",
-    "Sudan",
-    "Sweden",
-    "Switzerland",
-    "Syria",
-    "Taiwan",
-    "Tajikistan",
-    "Tanzania",
-    "Thailand",
-    "Togo",
-    "Tunisia",
-    "Turkey",
-    "Turkmenistan",
-    "Uganda",
-    "Ukraine",
-    "United Arab Emirates",
-    "United Kingdom",
-    "United States",
-    "Uruguay",
-    "Uzbekistan",
-    "Vatican City",
-    "Venezuela",
-    "Vietnam",
-    "Yemen",
-    "Zambia",
-    "Zimbabwe",
-  ];
+  final List<String> _countries = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Estonia", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Guatemala", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kuwait", "Laos", "Latvia", "Lebanon", "Libya", "Lithuania", "Luxembourg", "Madagascar", "Malaysia", "Maldives", "Mali", "Malta", "Mexico", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "Norway", "Oman", "Pakistan", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saudi Arabia", "Senegal", "Serbia", "Singapore", "Slovakia", "Slovenia", "Somalia", "South Africa", "South Korea", "Spain", "Sri Lanka", "Sudan", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Togo", "Tunisia", "Turkey", "Turkmenistan", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"];
+
 
   String _selectedCountry = "Malaysia";
 
@@ -206,39 +54,25 @@ class _AccountInfoEditPageState extends State<AccountInfoEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xffDAA520),
+        backgroundColor: const Color(0xffDAA520), // Goldenrod color
         automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        title: Stack(
+          alignment: Alignment.center, // ✅ Ensures the title stays centered
           children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            const Expanded(
-              child: Center(
-                child: Text(
-                  "Edit Account Info",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+            /// ✅ Back Button (Left-Aligned)
+            const Positioned(left: 0, child: CustomBackButton()),
+
+            /// ✅ Centered Title
+            const Align(
+              alignment: Alignment.center,
+              child: Text(
+                "Edit Account Info",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
               ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.notifications, color: Colors.black),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const NotificationPage(),
-                  ),
-                );
-              },
             ),
           ],
         ),
@@ -290,20 +124,64 @@ class _AccountInfoEditPageState extends State<AccountInfoEditPage> {
               label: "Phone Number",
               controller: _phoneController,
             ),
-            CustomDatePicker(
-              label: "Date of Birth",
-              controller: _dobController,
+            Theme(
+              data: Theme.of(context).copyWith(
+                dialogBackgroundColor: Colors.white, // ✅ White background for the calendar dialog
+                colorScheme: ColorScheme.light(
+                  primary: Color(0xFFDAA520), // ✅ Gold for the selected date highlight
+                  onPrimary: Colors.white, // ✅ White text on selected date
+                  onSurface: Colors.black, // ✅ Black text for normal dates
+                ),
+              ),
+              child: CustomDatePicker(
+                label: "Date of Birth",
+                controller: _dobController,
+              ),
             ),
             CustomPasswordField(
               label: "Password",
               controller: _passwordController,
             ),
-            CustomDropdown(
-              label: "Country",
-              items: _countries,
-              selectedItem: _selectedCountry,
-              onChanged: (value) => setState(() => _selectedCountry = value!),
-            ),
+
+
+            DropdownButtonFormField<String>(
+  value: _selectedCountry, // Keeps the selected value
+  decoration: InputDecoration(
+    labelText: "Country",
+    filled: true,
+    fillColor: Colors.white, // Background color for dropdown
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: Colors.black54),
+    ),
+  ),
+  icon: const Icon(Icons.arrow_drop_down, color: Color(0xFFDAA520)), // Gold dropdown icon
+  dropdownColor: Colors.white, // White dropdown background
+  style: const TextStyle(color: Colors.black), // Text color
+  menuMaxHeight: 300, // ✅ Limits the dropdown height so it doesn't take full screen
+  items: _countries.map<DropdownMenuItem<String>>((String country) {
+    return DropdownMenuItem<String>(
+      value: country,
+      child: Row(
+        children: [
+          Icon(Icons.flag, color: Color(0xFFDAA520)), // Gold location icon
+          const SizedBox(width: 10),
+          Text(
+            country,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+    );
+  }).toList(),
+  onChanged: (String? newValue) {
+    setState(() {
+      _selectedCountry = newValue!;
+    });
+  },
+),
+
+
             const SizedBox(height: 24),
             ElevatedButton(
               style: ElevatedButton.styleFrom(

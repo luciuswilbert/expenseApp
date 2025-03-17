@@ -1,3 +1,4 @@
+import 'package:expense_app_project/widgets/custom_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_app_project/widgets/custom_text_field.dart';
 import 'package:expense_app_project/widgets/custom_toggle.dart';
@@ -129,10 +130,30 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xffDAA520),
-        title: const Text(
-          "Settings",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        backgroundColor: const Color(0xffDAA520), // Goldenrod color
+        automaticallyImplyLeading: false,
+        title: Stack(
+          alignment: Alignment.center, // ✅ Ensures the title stays centered
+          children: [
+            /// ✅ Back Button (Left-Aligned)
+            const Positioned(
+              left: 0,
+              child: CustomBackButton(),
+            ),
+
+            /// ✅ Centered Title
+            const Align(
+              alignment: Alignment.center,
+              child: Text(
+                "Settings",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       body: SingleChildScrollView(
@@ -146,7 +167,6 @@ class _SettingsPageState extends State<SettingsPage> {
               selectedItem: _selectedCurrency,
               onChanged: (value) => setState(() => _selectedCurrency = value!),
             ),
-
             /// Expense Budget (Using CustomTextField)
             CustomTextField(
               label: "Expense Budget",

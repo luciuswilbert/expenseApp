@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:expense_app_project/data/transaction_data.dart';
-import 'package:expense_app_project/widgets/filter_dialog_widget.dart';
+import 'package:expense_app_project/data/transaction_data.dart'; // ✅ Import transaction data
+import 'package:expense_app_project/utils/transaction_helpers.dart'; // ✅ Import helper functions
+import 'package:expense_app_project/widgets/filter_dialog_widget.dart'; // ✅ Import filter dialog
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({Key? key}) : super(key: key);
@@ -12,8 +13,8 @@ class TransactionPage extends StatefulWidget {
 class _TransactionPageState extends State<TransactionPage> {
   /// ✅ Declare State Variables
   String selectedDuration = '30 days'; // Default selected duration
-  String selectedSort = 'Newest'; // Default selected sorting
-  List<String> selectedCategories = []; // List to store selected categories
+  String selectedSort = 'Newest'; // Default sorting
+  List<String> selectedCategories = []; // Store selected categories
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class _TransactionPageState extends State<TransactionPage> {
           IconButton(
             icon: const Icon(Icons.filter_list, color: Colors.black),
             onPressed: () {
-              _showFilterDialog(); // ✅ Call the function to open the filter dialog
+              _showFilterDialog(); // ✅ Open the filter dialog
             },
           ),
         ],
@@ -38,60 +39,63 @@ class _TransactionPageState extends State<TransactionPage> {
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(8.0),
-        itemCount:
-            transactions.length, // ✅ Now uses the imported transaction list
+        itemCount: transactions.length, // ✅ Uses transaction data
         itemBuilder: (context, index) {
           final transaction = transactions[index];
           return TransactionCard(
-            icon: Icon(transaction['icon'], color: transaction['iconColor']),
+            icon: Icon(
+              getCategoryIcon(transaction['category']), // ✅ Assign icon dynamically
+              color: getCategoryColor(transaction['category']), // ✅ Assign color dynamically
+            ),
             category: transaction['category'],
             amount: transaction['amount'],
             dateTime: transaction['dateTime'],
             color: transaction['color'],
-            onTap:
-                () => _showDescriptionDialog(
-                  context,
-                  transaction['description'],
-                  transaction['color'],
-                  transaction['iconColor'],
-                ),
+            onTap: () => _showDescriptionDialog(
+              context,
+              transaction['category'],
+              transaction['description'],
+              transaction['color'],
+              getCategoryColor(transaction['category']), // ✅ Fetch dynamic icon color
+            ),
           );
         },
       ),
     );
   }
 
+  /// ✅ Function to show the Filter Dialog
   void _showFilterDialog() {
     showDialog(
       context: context,
-      builder:
-          (context) => FilterDialog(
-            initialDuration: selectedDuration,
-            initialSort: selectedSort,
-            initialSelectedCategories: selectedCategories,
-            onApply: (duration, sort, categories) {
-              setState(() {
-                selectedDuration = duration;
-                selectedSort = sort;
-                selectedCategories = categories;
-              });
-            },
-          ),
+      builder: (context) => FilterDialog(
+        initialDuration: selectedDuration,
+        initialSort: selectedSort,
+        initialSelectedCategories: selectedCategories,
+        onApply: (duration, sort, categories) {
+          setState(() {
+            selectedDuration = duration;
+            selectedSort = sort;
+            selectedCategories = categories;
+          });
+        },
+      ),
     );
   }
 
-  /// Dialog to show transaction description
+  /// ✅ Function to show Transaction Description in a Popup Dialog
   void _showDescriptionDialog(
     BuildContext context,
+    String category,
     String description,
-    Color color,
+    Color backgroundColor,
     Color iconColor,
   ) {
     showDialog(
       context: context,
       builder: (context) {
         return Dialog(
-          backgroundColor: color,
+          backgroundColor: backgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -101,20 +105,32 @@ class _TransactionPageState extends State<TransactionPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Description',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                /// ✅ Category Title
+                Text(
+                  category,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
                 const SizedBox(height: 10),
-                Text(description, style: const TextStyle(fontSize: 16)),
+
+                /// ✅ Transaction Description
+                Text(
+                  description,
+                  style: const TextStyle(fontSize: 16, color: Colors.black87),
+                ),
                 const SizedBox(height: 20),
+
+                /// ✅ Close Button
                 Align(
                   alignment: Alignment.center,
                   child: ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: color, // Text color
-                      backgroundColor: iconColor, // Background color
+                      foregroundColor: Colors.white, // ✅ Text color
+                      backgroundColor: iconColor, // ✅ Background color based on category
                     ),
                     child: const Text('Close'),
                   ),
@@ -128,7 +144,7 @@ class _TransactionPageState extends State<TransactionPage> {
   }
 }
 
-/// ✅ Transaction Card Widget (Reusable)
+/// ✅ **Transaction Card Widget**
 class TransactionCard extends StatelessWidget {
   final Icon icon;
   final String category;
@@ -150,7 +166,7 @@ class TransactionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: onTap, // ✅ Opens the description dialog
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         padding: const EdgeInsets.all(16),
@@ -160,12 +176,13 @@ class TransactionCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            icon,
+            icon, // ✅ Displays the category icon
             const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  /// ✅ Category Name
                   Text(
                     category,
                     style: const TextStyle(
@@ -174,6 +191,8 @@ class TransactionCard extends StatelessWidget {
                       color: Colors.black87,
                     ),
                   ),
+
+                  /// ✅ Date & Time
                   Text(
                     dateTime,
                     style: const TextStyle(fontSize: 14, color: Colors.grey),
@@ -181,6 +200,8 @@ class TransactionCard extends StatelessWidget {
                 ],
               ),
             ),
+
+            /// ✅ Amount
             Text(
               amount,
               style: const TextStyle(

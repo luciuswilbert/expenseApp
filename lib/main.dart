@@ -5,6 +5,7 @@ import 'package:expense_app_project/pages/profile/profile_page.dart';
 import 'package:expense_app_project/widgets/bottom_nav_bar.dart';
 import 'package:expense_app_project/pages/Onboard/splash_screen.dart';
 import 'package:expense_app_project/pages/transaction/transaction_page.dart';
+import 'package:expense_app_project/pages/add_expense/add_expense.dart';
 
 void main() {
   runApp(const MyApp());
@@ -57,7 +58,10 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: const Color(0xffDAA520), // Goldenrod
         shape: const CircleBorder(),
         onPressed: () {
-          // TODO: Add action for Add Expense
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddExpensePage()),
+          );
         },
         child: const Icon(Icons.add, color: Colors.white),
       ),

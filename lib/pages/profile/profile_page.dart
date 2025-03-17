@@ -102,19 +102,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
         ),
-
-        /// Back Button (Keeps Alignment)
-        Positioned(
-          top: 50,
-          left: 16,
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () {
-              // Add back navigation logic
-            },
-          ),
-        ),
-
         const NotificationButton(),
       ],
     );
@@ -132,42 +119,51 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildOption(IconData icon, String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
-      child: Card(
-        elevation: 1.5,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 2,
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
+    child: Card(
+      elevation: 1.5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      color: Color(0xFFFAF3E0), // Light Cream for subtle contrast
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+        leading: Icon(icon, color: Color(0xFFB8860B)), // Dark Gold Icon
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.black, // Black Text for readability
+            fontWeight: FontWeight.bold,
           ),
-          leading: Icon(icon, color: Colors.black54),
-          title: Text(title, style: const TextStyle(fontSize: 14)),
-          trailing: const Icon(
-            Icons.arrow_forward_ios,
-            size: 16,
-            color: Colors.grey,
-          ),
-          onTap: () {
-            if (title == "Account Info") {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AccountInfoPage(),
-                ),
-              );
-            } else if (title == "Settings") {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsPage()),
-              );
-            } else if (title == "Log Out") {
-              _showLogoutDialog();
-            }
-          },
         ),
+        trailing: const Icon(
+          Icons.arrow_forward_ios,
+          size: 16,
+          color: Color(0xFFB8860B), // Light Gold Arrow for consistency
+        ),
+        onTap: () {
+          if (title == "Account Info") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AccountInfoPage(),
+              ),
+            );
+          } else if (title == "Settings") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsPage()),
+            );
+          } else if (title == "Log Out") {
+            _showLogoutDialog();
+          }
+        },
       ),
-    );
-  }
+    ),
+  );
+}
+
+
+
+
 }
