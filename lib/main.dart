@@ -1,18 +1,45 @@
-import 'package:expense_app_project/pages/Onboard/onboard.dart';
-import 'package:expense_app_project/pages/home/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:expense_app_project/pages/profile/profile_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:expense_app_project/widget_tree.dart';
+import 'package:expense_app_project/firebase_options.dart';
+import 'package:expense_app_project/pages/home/home_page.dart';
+import 'package:expense_app_project/pages/Onboard/onboard.dart';
 import 'package:expense_app_project/widgets/bottom_nav_bar.dart';
+import 'package:expense_app_project/pages/profile/profile_page.dart';
 import 'package:expense_app_project/pages/Onboard/splash_screen.dart';
-import 'package:expense_app_project/pages/transaction/transaction_page.dart';
 import 'package:expense_app_project/pages/add_expense/add_expense.dart';
+import 'package:expense_app_project/pages/transaction/transaction_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print("🔥 Firebase initialized successfully!"); // Debug message
+  } catch (e) {
+    print("❌ Firebase initialization failed: $e");
+  }
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Expense App',
+      theme: ThemeData(primarySwatch: Colors.orange),
+      home: const WidgetTree(),
+    );
+  }
+}
+
+class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
