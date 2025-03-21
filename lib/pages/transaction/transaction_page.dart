@@ -7,10 +7,10 @@ class TransactionPage extends StatefulWidget {
   const TransactionPage({Key? key}) : super(key: key);
 
   @override
-  _TransactionPageState createState() => _TransactionPageState();
+  TransactionPageState createState() => TransactionPageState();
 }
 
-class _TransactionPageState extends State<TransactionPage> {
+class TransactionPageState extends State<TransactionPage> {
   /// ✅ Declare State Variables
   String selectedDuration = '30 days'; // Default selected duration
   String selectedSort = 'Newest'; // Default sorting
@@ -38,7 +38,7 @@ class _TransactionPageState extends State<TransactionPage> {
         automaticallyImplyLeading: false, // Remove back arrow
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(top: 8.0,bottom: 80.0, left: 8.0, right: 8.0 ),
         itemCount: transactions.length, // ✅ Uses transaction data
         itemBuilder: (context, index) {
           final transaction = transactions[index];
@@ -51,7 +51,7 @@ class _TransactionPageState extends State<TransactionPage> {
             amount: transaction['amount'],
             dateTime: transaction['dateTime'],
             color: transaction['color'],
-            onTap: () => _showDescriptionDialog(
+            onTap: () => showDescriptionDialog(
               context,
               transaction['category'],
               transaction['description'],
@@ -82,7 +82,16 @@ class _TransactionPageState extends State<TransactionPage> {
       ),
     );
   }
-
+/*
+  void showDescriptionDialog(
+    BuildContext context,
+    String category,
+    String description,
+    Color backgroundColor,
+    Color iconColor,
+  ) {
+    _showDescriptionDialog(context, category, description, backgroundColor, iconColor); // Call the private method
+  }
   /// ✅ Function to show Transaction Description in a Popup Dialog
   void _showDescriptionDialog(
     BuildContext context,
@@ -141,7 +150,62 @@ class _TransactionPageState extends State<TransactionPage> {
         );
       },
     );
-  }
+  }*/
+}
+
+// Show Description Daialog  
+void showDescriptionDialog(
+  BuildContext context,
+  String category,
+  String description,
+  Color backgroundColor,
+  Color iconColor,
+) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+        backgroundColor: backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                category,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                description,
+                style: const TextStyle(fontSize: 16, color: Colors.black87),
+              ),
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: iconColor,
+                  ),
+                  child: const Text('Close'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
 
 /// ✅ **Transaction Card Widget**

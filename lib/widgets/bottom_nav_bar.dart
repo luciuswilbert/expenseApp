@@ -12,7 +12,17 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
+    return  Container(
+      decoration: BoxDecoration(
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: const Color.fromARGB(64, 0, 0, 0),
+            blurRadius: 15,
+          ),
+        ],
+      ),
+      child: BottomAppBar(
+      
       shape: const CircularNotchedRectangle(),
       notchMargin: 8.0,
       color: Colors.white,
@@ -26,7 +36,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           _buildNavItem(3, Icons.person, "Profile"),
         ],
       ),
-    );
+    ),);
   }
 
   Widget _buildNavItem(int index, IconData icon, String label) {

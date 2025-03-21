@@ -1,5 +1,6 @@
 import 'package:expense_app_project/pages/Onboard/onboard.dart';
 import 'package:expense_app_project/pages/home/home_page.dart';
+import 'package:expense_app_project/pages/summary/summary.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_app_project/pages/profile/profile_page.dart';
 import 'package:expense_app_project/widgets/bottom_nav_bar.dart';
@@ -49,7 +50,9 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _getSelectedPage(_selectedIndex),
+      
+      extendBody: true,
+      body: _getSelectedPage(_selectedIndex) ,
       bottomNavigationBar: CustomBottomNavigationBar(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,
@@ -76,7 +79,7 @@ class _MainScreenState extends State<MainScreen> {
       case 1:
         return TransactionPage();
       case 2:
-        return const Center(child: Text("Summary (Coming Soon)"));
+        return SummaryPage();
       case 3:
       default:
         return const ProfilePage();

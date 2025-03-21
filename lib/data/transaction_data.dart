@@ -66,4 +66,60 @@ final List<Map<String, dynamic>> transactions = [
     'dateTime': '28 Feb @ 07:30 PM',
     'color': const Color(0xFFFFA07A), // Light orange
   },
+  {
+    'category': 'Miscellaneous',
+    'description': 'Pay Barbershop',
+    'amount': '- RM 120',
+    'dateTime': '28 Feb @ 10:00 AM',
+    'color': const Color(0xFFFAFAD2), // Light yellow
+  },
+  {
+    'category': 'Healthcare',
+    'description': 'Buy Vitamin',
+    'amount': '- RM 80',
+    'dateTime': '28 Feb @ 03:30 PM',
+    'color': const Color(0xFFFFE1F0), // Light pinkish
+  },
+  {
+    'category': 'Transportation',
+    'description': 'Buy Petrol',
+    'amount': '- RM 32',
+    'dateTime': '28 Feb @ 07:30 PM',
+    'color': const Color(0xFFB0E0E6), // Light blue
+  },
+  {
+    'category': 'Utilities',
+    'description': 'Pay Electricity',
+    'amount': '- RM 32',
+    'dateTime': '28 Feb @ 07:30 PM',
+    'color': const Color(0xFFD8BFD8), // Light purple
+  },
+  {
+    'category': 'Miscellaneous',
+    'description': 'Pay Barbershop',
+    'amount': '- RM 120',
+    'dateTime': '28 Feb @ 10:00 AM',
+    'color': const Color(0xFFFAFAD2), // Light yellow
+  },
+  {
+    'category': 'Healthcare',
+    'description': 'Buy Vitamin',
+    'amount': '- RM 80',
+    'dateTime': '28 Feb @ 03:30 PM',
+    'color': const Color(0xFFFFE1F0), // Light pinkish
+  },
+  {
+    'category': 'Transportation',
+    'description': 'Buy Petrol',
+    'amount': '- RM 32',
+    'dateTime': '28 Feb @ 07:30 PM',
+    'color': const Color(0xFFB0E0E6), // Light blue
+  },
+  {
+    'category': 'Utilities',
+    'description': 'Pay Electricity',
+    'amount': '- RM 32',
+    'dateTime': '28 Feb @ 07:30 PM',
+    'color': const Color(0xFFD8BFD8), // Light purple
+  },
 ];
