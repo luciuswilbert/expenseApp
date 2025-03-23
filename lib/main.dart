@@ -1,8 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:expense_app_project/pages/login_register/google_profile.dart';
+import 'package:expense_app_project/pages/login_register/login_register_screen.dart';
+import 'package:expense_app_project/pages/login_register/login_screen.dart';
+import 'package:expense_app_project/pages/login_register/sign_up_screen.dart';
+import 'package:expense_app_project/providers/google.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:expense_app_project/widget_tree.dart';
-import 'package:expense_app_project/firebase_options.dart';
+import 'package:expense_app_project/providers/firebase_options.dart';
 import 'package:expense_app_project/pages/home/home_page.dart';
 import 'package:expense_app_project/pages/Onboard/onboard.dart';
 import 'package:expense_app_project/widgets/bottom_nav_bar.dart';
@@ -10,6 +14,8 @@ import 'package:expense_app_project/pages/profile/profile_page.dart';
 import 'package:expense_app_project/pages/Onboard/splash_screen.dart';
 import 'package:expense_app_project/pages/add_expense/add_expense.dart';
 import 'package:expense_app_project/pages/transaction/transaction_page.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +27,11 @@ Future<void> main() async {
   } catch (e) {
     print("❌ Firebase initialization failed: $e");
   }
-  runApp(const MyApp());
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, // Restricts to portrait mode only
+  ]).then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -29,33 +39,49 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Expense App',
-      theme: ThemeData(primarySwatch: Colors.orange),
-      home: const WidgetTree(),
-    );
-  }
-}
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => GoogleSignInProvider()),
+      ],
 
-class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Expense App',
-      theme: ThemeData(
-        primaryColor: const Color(0xffDAA520),
-        scaffoldBackgroundColor: Colors.white,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Expense App',
+        theme: ThemeData(primarySwatch: Colors.orange),
+        initialRoute: "/",
+        routes: {
+          "/":
+              (context) => SplashScreen(
+                nextScreen: LoginRegisterScreen(),
+              ), // Make sure this is correct
+          "/homepage": (context) => MainScreen(),
+          "/login": (context) => LoginScreen(),
+          "/sign-up": (context) => SignUpScreen(),
+          "/profile": (context) => ProfileScreen(),
+        },
       ),
-      home: const SplashScreen(
-        nextScreen: OnboardingScreen(),
-      ), // Show splash first
     );
   }
 }
+
+// class App extends StatelessWidget {
+//   const App({Key? key}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       title: 'Expense App',
+//       theme: ThemeData(
+//         primaryColor: const Color(0xffDAA520),
+//         scaffoldBackgroundColor: Colors.white,
+//       ),
+//       home: const SplashScreen(
+//         nextScreen: OnboardingScreen(),
+//       ), // Show splash first
+//     );
+//   }
+// }
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -72,6 +98,15 @@ class _MainScreenState extends State<MainScreen> {
       _selectedIndex = index;
     });
   }
+
+  // ElevatedButton(
+  //         onPressed: () async {
+  //           await FirebaseAuth.instance.signOut();
+  //           Navigator.pushReplacementNamed(context, "/login");
+  //         },
+  //         child: const Text("Logout"),
+  //       ),
+  //     ),
 
   @override
   Widget build(BuildContext context) {

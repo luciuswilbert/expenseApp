@@ -1,16 +1,8 @@
-# expense_app_project
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Google Sign In
+1. Paste this to your cmd "keytool -list -v \
+-alias androiddebugkey -keystore %USERPROFILE%\.android\debug.keystore" in cmd 
+2. Type password: "android"
+3. Receive SHA1 and SHA256
+4. Add Fingerprint in firebase
+![Add Fingerprint SHA1 in firebase](image.png) 
+5. Paste "flutter pub add google_sign_in firebase_auth provider font_awesome_flutter cupertino_icons" in cmd
