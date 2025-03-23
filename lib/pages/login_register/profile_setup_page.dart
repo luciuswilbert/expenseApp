@@ -6,6 +6,8 @@ import 'package:expense_app_project/widgets/custom_text_field.dart';
 import 'package:expense_app_project/widgets/custom_date_picker.dart';
 import 'package:expense_app_project/widgets/custom_dropdown.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 
 
 class ProfileSetupPage extends StatefulWidget {
@@ -16,6 +18,23 @@ class ProfileSetupPage extends StatefulWidget {
 }
 
 class _ProfileSetupPageState extends State<ProfileSetupPage> {
+
+  Future<String?> _uploadImage(File imageFile, String email) async {
+    try {
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('profile_pictures')
+          .child('$email.jpg');
+
+      await ref.putFile(imageFile);
+      String downloadUrl = await ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print("❌ Failed to upload image: $e");
+      return null;
+    }
+  }
+
   File? _selectedImage;
   String? _googlePhotoUrl;
 
@@ -107,11 +126,12 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                 CircleAvatar(
                   radius: 50,
                   backgroundImage: _selectedImage != null
-                      ? FileImage(_selectedImage!)
-                      : (_googlePhotoUrl != null
-                          ? NetworkImage(_googlePhotoUrl!)
-                          : const AssetImage("assets/profile_placeholder.png"))
-                      as ImageProvider,
+                    ? FileImage(_selectedImage!)
+                    : null,
+                  child: _selectedImage == null
+                    ? const Icon(Icons.person, size: 40, color: Colors.white)
+                    : null,
+
                 ),
                 Positioned(
                   bottom: 0,
@@ -167,30 +187,26 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
             ElevatedButton(
               onPressed: () async {
                 final user = FirebaseAuth.instance.currentUser;
-                if (_validateInputs()) {
-                  final profileData = _gatherProfileData();
+                  if (_validateInputs()) {
+                    String? imageUrl;
 
-                  // Simulate saving
-                  print("🔥 Profile Data JSON: $profileData");
-                  if (user?.email != null) {
-                    await FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(user!.email!)
-                        .set(profileData);
+                    if (_selectedImage != null && user?.email != null) {
+                      imageUrl = await _uploadImage(_selectedImage!, user!.email!);
+                    }
+
+                    final profileData = _gatherProfileData();
+                    profileData['profileImageUrl'] = imageUrl ?? _googlePhotoUrl;
+
+                    if (user?.email != null) {
+                      await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user!.email!)
+                          .set(profileData);
+                    }
+
+                    Navigator.pushReplacementNamed(context, "/saving-profile");
                   }
-                  print("✅ Profile data saved to Firestore!");
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("✅ Profile setup complete!"),
-                      duration: Duration(seconds: 1), // ✅ Only shows for 1 second
-                    ),
-                  );
-                  
 
-
-                  Navigator.pushReplacementNamed(context, "/saving-profile");
-
-                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xffDAA520),

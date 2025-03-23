@@ -4,6 +4,11 @@ import 'package:expense_app_project/widgets/curved_bottom_container.dart';
 import 'package:expense_app_project/widgets/logout_dialog.dart';
 import 'package:expense_app_project/pages/profile/settings_page.dart';
 import 'package:expense_app_project/widgets/custom_notification.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
+
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -13,10 +18,31 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String userName = "Lucius Wilbert Tjoa";
-  String userEmail = "luciuswilbert@gmail.com";
-  String profileImage =
-      "assets/profile_placeholder.png"; // Replace with actual profile image path
+  Map<String, dynamic>? userProfile;
+  bool isLoading = true;
+  
+
+  @override
+  void initState() {
+    super.initState();
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.email)
+          .get()
+          .then((doc) {
+        if (doc.exists) {
+          setState(() {
+            userProfile = doc.data();
+            isLoading = false;
+          });
+        }
+      });
+    }
+  }
+
 
   void _showLogoutDialog() {
     showModalBottomSheet(
@@ -37,6 +63,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    if (isLoading || userProfile == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -50,6 +82,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildHeader() {
+    final user = FirebaseAuth.instance.currentUser;
+    final String userName = "${userProfile!['firstName']} ${userProfile!['lastName']}";
+    final String userEmail = userProfile!['email'];
+    final String? imageUrl = userProfile?['profileImageUrl'];
+
+
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
@@ -79,12 +117,15 @@ class _ProfilePageState extends State<ProfilePage> {
           top: 140, // Kept the profile image lower
           child: Column(
             children: [
-              CircleAvatar(
+             CircleAvatar(
                 radius: 50,
-                child: CircleAvatar(
-                  radius: 48,
-                  backgroundImage: AssetImage(profileImage),
-                ),
+                backgroundColor: const Color(0xffDAA520),
+                backgroundImage: (imageUrl != null && imageUrl.isNotEmpty)
+                    ? NetworkImage(imageUrl)
+                    : null,
+                child: (imageUrl == null || imageUrl.isEmpty)
+                    ? const Icon(Icons.person, size: 40, color: Colors.white)
+                    : null,
               ),
               const SizedBox(height: 12), // Adjusted spacing
               Text(
