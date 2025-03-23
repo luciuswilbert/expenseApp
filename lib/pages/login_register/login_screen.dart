@@ -1,4 +1,5 @@
 import 'package:expense_app_project/pages/login_register/auth_theme.dart';
+import 'package:expense_app_project/pages/login_register/profile_setup_page.dart';
 import 'package:expense_app_project/pages/login_register/responsive_scroll.dart';
 import 'package:expense_app_project/providers/google.dart';
 import 'package:expense_app_project/widgets/custom_password_field.dart';
@@ -65,17 +66,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // ✅ Check if the user is signing in for the first time
         if (userCredential.additionalUserInfo?.isNewUser ?? false) {
-          Navigator.pushReplacementNamed(
+          Navigator.pushReplacement(
             context,
-            "/profile",
-          ); // Redirect to profile page
-
+            MaterialPageRoute(builder: (context) => const ProfileSetupPage()),
+          );
         } else {
-          Navigator.pushReplacementNamed(
-            context,
-            "/homepage",
-          ); // Redirect to homepage
+          Navigator.pushReplacementNamed(context, "/homepage");
         }
+
       } else {
         setState(() {
           message = "Google Sign-In failed. Please try again.";

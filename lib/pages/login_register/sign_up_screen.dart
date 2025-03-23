@@ -1,4 +1,5 @@
 import 'package:expense_app_project/pages/login_register/auth_theme.dart';
+import 'package:expense_app_project/pages/login_register/profile_setup_page.dart';
 import 'package:expense_app_project/pages/login_register/responsive_scroll.dart';
 import 'package:expense_app_project/widgets/custom_password_field.dart';
 import 'package:expense_app_project/widgets/custom_text_field.dart';
@@ -42,7 +43,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         });
 
         Future.delayed(const Duration(seconds: 1), () {
-          Navigator.pushReplacementNamed(context, "/profile");
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileSetupPage()),
+          );
         });
       } on FirebaseAuthException catch (e) {
         setState(() => message = e.message);

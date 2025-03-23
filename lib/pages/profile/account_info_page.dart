@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'account_info_edit_page.dart';
 import 'package:expense_app_project/widgets/custom_back_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class AccountInfoPage extends StatefulWidget {
   const AccountInfoPage({Key? key}) : super(key: key);
@@ -10,6 +13,11 @@ class AccountInfoPage extends StatefulWidget {
 }
 
 class _AccountInfoPageState extends State<AccountInfoPage> {
+
+  Map<String, dynamic>? userProfile;
+  bool isGoogle = false;
+  bool isLoading = true;
+
   String userName = "Lucius Wilbert Tjoa";
   String userEmail = "luciuswilbert@gmail.com";
   String userPhone = "+60 1112706927";
@@ -20,7 +28,37 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
   bool _isPasswordVisible = false; // Toggle password visibility
 
   @override
+  void initState() {
+    super.initState();
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      isGoogle = user.providerData.first.providerId == "google.com";
+
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.email)
+          .get()
+          .then((doc) {
+            if (doc.exists) {
+              setState(() {
+                userProfile = doc.data();
+                isLoading = false;
+              });
+            }
+          });
+    }
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    if (isLoading || userProfile == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xffDAA520), // Goldenrod color
@@ -29,10 +67,7 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
           alignment: Alignment.center, // ✅ Ensures the title stays centered
           children: [
             /// ✅ Back Button (Left-Aligned)
-            const Positioned(
-              left: 0,
-              child: CustomBackButton(),
-            ),
+            const Positioned(left: 0, child: CustomBackButton()),
 
             /// ✅ Centered Title
             const Align(
@@ -60,12 +95,15 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
               backgroundImage: AssetImage('assets/profile_placeholder.png'),
             ),
             const SizedBox(height: 16),
-            _buildInfoRow("Full Name", userName),
-            _buildInfoRow("Email", userEmail),
-            _buildInfoRow("Phone Number", userPhone),
-            _buildInfoRow("Date of Birth", userDOB),
-            _buildPasswordRow("Password", userPassword),
-            _buildInfoRow("Country", userCountry),
+            _buildInfoRow("Full Name", "${userProfile!['firstName']} ${userProfile!['lastName']}"),
+            _buildInfoRow("Email", userProfile!['email']),
+            _buildInfoRow("Phone Number", userProfile!['phone']),
+            _buildInfoRow("Date of Birth", userProfile!['dob']),
+            isGoogle
+              ? _buildInfoRow("Password", "Signed in with Google")
+              : _buildPasswordRow("Password", userProfile!['password'] ?? "••••••••"),
+            _buildInfoRow("Country", userProfile!['country']),
+
             const SizedBox(height: 24),
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(

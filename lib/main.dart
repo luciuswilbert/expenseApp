@@ -1,6 +1,8 @@
 import 'package:expense_app_project/pages/login_register/google_profile.dart';
 import 'package:expense_app_project/pages/login_register/login_register_screen.dart';
 import 'package:expense_app_project/pages/login_register/login_screen.dart';
+import 'package:expense_app_project/pages/login_register/profile_success_screen.dart';
+import 'package:expense_app_project/pages/login_register/saving_profile_screen.dart';
 import 'package:expense_app_project/pages/login_register/sign_up_screen.dart';
 import 'package:expense_app_project/providers/google.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -50,11 +52,14 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(primarySwatch: Colors.orange),
         initialRoute: "/",
         routes: {
+          "/saving-profile": (context) => const SavingProfileScreen(),
+          "/profile-success": (context) => const ProfileSuccessScreen(),
+
           "/":
               (context) => SplashScreen(
                 nextScreen: LoginRegisterScreen(),
               ), // Make sure this is correct
-          "/homepage": (context) => MainScreen(),
+          "/homepage": (context) => const MainScreen(),
           "/login": (context) => LoginScreen(),
           "/sign-up": (context) => SignUpScreen(),
           "/profile": (context) => ProfileScreen(),

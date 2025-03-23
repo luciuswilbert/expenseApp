@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:expense_app_project/widgets/custom_text_field.dart';
 import 'package:expense_app_project/widgets/custom_toggle.dart';
 import 'package:expense_app_project/widgets/custom_dropdown.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -12,6 +15,9 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  Map<String, dynamic>? userProfile;
+  bool isLoading = true;
+
   String _selectedCurrency = "USD";
   String _selectedLanguage = "English";
   bool _isDarkMode = false;
@@ -127,7 +133,37 @@ class _SettingsPageState extends State<SettingsPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.email)
+          .get()
+          .then((doc) {
+        if (doc.exists) {
+          setState(() {
+            userProfile = doc.data();
+            _selectedCurrency = userProfile!['currency'];
+            _selectedLanguage = userProfile!['language'];
+            _expenseBudgetController.text = userProfile!['budget'];
+            isLoading = false;
+          });
+        }
+      });
+    }
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    if (isLoading || userProfile == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xffDAA520), // Goldenrod color
