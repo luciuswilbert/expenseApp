@@ -1,3 +1,4 @@
+import 'package:expense_app_project/pages/add_expense/ocr_add_expense.dart';
 import 'package:expense_app_project/pages/login_register/google_profile.dart';
 import 'package:expense_app_project/pages/login_register/login_register_screen.dart';
 import 'package:expense_app_project/pages/login_register/login_screen.dart';
@@ -54,7 +55,6 @@ class MyApp extends StatelessWidget {
         routes: {
           "/saving-profile": (context) => const SavingProfileScreen(),
           "/profile-success": (context) => const ProfileSuccessScreen(),
-
           "/":
               (context) => SplashScreen(
                 nextScreen: LoginRegisterScreen(),
@@ -63,6 +63,7 @@ class MyApp extends StatelessWidget {
           "/login": (context) => LoginScreen(),
           "/sign-up": (context) => SignUpScreen(),
           "/profile": (context) => ProfileScreen(),
+          "/ocr": (context) => OCRAddExpensePage(),
         },
       ),
     );
@@ -84,15 +85,6 @@ class _MainScreenState extends State<MainScreen> {
       _selectedIndex = index;
     });
   }
-
-  // ElevatedButton(
-  //         onPressed: () async {
-  //           await FirebaseAuth.instance.signOut();
-  //           Navigator.pushReplacementNamed(context, "/login");
-  //         },
-  //         child: const Text("Logout"),
-  //       ),
-  //     ),
 
   @override
   Widget build(BuildContext context) {

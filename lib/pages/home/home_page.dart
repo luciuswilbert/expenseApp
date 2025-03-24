@@ -10,71 +10,132 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          /// ✅ Reusable Curved Yellow Background
-          const CurvedBottomContainer(height: 240),
-
-          /// ✅ Reusable Notification Icon
-          const NotificationButton(),
-
-          /// ✅ Greeting Text (Aligned with Notification Icon)
-          Positioned(
-            top: 50,
-            left: 16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  'Good afternoon,',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
-                ),
-                Text(
-                  'Lucius Wilbert Tjoa',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              ],
-            ),
-          ),
-
-          /// ✅ Total Balance Section (Balance + Eye Icon)
-          Positioned(
-            top: 140, // Adjusted position to move it lower
-            left: 0,
-            right: 0,
-            child: Column(
+      body: SingleChildScrollView( // ✅ Ensures full page is scrollable
+        child: Column(
+          children: [
+            Stack(
               children: [
-                const Text(
-                  'Total Balance',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-                const SizedBox(height: 3),
+                /// ✅ Yellow Curved Background
+                const CurvedBottomContainer(height: 240),
 
-                /// ✅ Balance + Eye Icon (Manually Positioned)
-                Stack(
-                  children: [
-                    /// ✅ Balance (Perfectly Centered)
-                    const Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        'RM 2,440.00',
-                        style: TextStyle(
-                          fontSize: 25,
-                          color: Colors.black,
-                        ),
+                /// ✅ Notification Button
+                const NotificationButton(),
+
+                /// ✅ Greeting Text
+                Positioned(
+                  top: 50,
+                  left: 16,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Good afternoon,',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
                       ),
-                    ),
-                  ],
+                      Text(
+                        'Lucius Wilbert Tjoa',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+
+                /// ✅ Total Balance
+                Positioned(
+                  top: 140,
+                  left: 0,
+                  right: 0,
+                  child: Column(
+                    children: const [
+                      Text(
+                        'Total Balance',
+                        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                      SizedBox(height: 3),
+                      Text(
+                        'RM 2,440.00',
+                        style: TextStyle(fontSize: 25, color: Colors.black),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+
+            const SizedBox(height: 20), // ✅ Leaves space below the stack
+
+            /// ✅ Features Title
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(30, 0, 16, 5),
+                child: Text(
+                  "Features",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+
+
+            /// ✅ Feature Cards (OCR, Chatbot, etc.)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              
+              child: Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                children: [
+                  _buildFeatureCard(Icons.receipt_long, "OCR", () {
+                    Navigator.pushNamed(context, '/ocr');
+                  }),
+                  _buildFeatureCard(Icons.chat, "Chatbot", () {}),
+                  _buildFeatureCard(Icons.mic, "Voice Assistant", () {}),
+                  _buildFeatureCard(Icons.summarize, "AI Summary", () {}),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 40), // Padding at bottom
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// ✅ Reusable Feature Card
+  Widget _buildFeatureCard(IconData icon, String label, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.4,
+        height: 100,
+        decoration: BoxDecoration(
+          color: const Color(0xFFFAF3E0),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(2, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 30, color: const Color(0xffDAA520)),
+            const SizedBox(height: 8),
+            Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
       ),
     );
   }

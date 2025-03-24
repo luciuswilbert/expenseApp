@@ -1,3 +1,4 @@
+import 'package:expense_app_project/pages/Onboard/onboard.dart';
 import 'package:flutter/material.dart';
 import 'account_info_page.dart';
 import 'package:expense_app_project/widgets/curved_bottom_container.dart';
@@ -50,13 +51,21 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       builder: (context) {
         return LogoutDialog(
-          onConfirm: () {
-            print("User logged out");
+          onConfirm: () async {
+            // ✅ Sign out from Firebase
+            await FirebaseAuth.instance.signOut();
+
+            // ✅ Remove all previous routes and go to Onboarding
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+              (Route<dynamic> route) => false,
+            );
           },
         );
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
