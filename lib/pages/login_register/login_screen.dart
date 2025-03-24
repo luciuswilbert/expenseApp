@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_app_project/pages/login_register/auth_theme.dart';
 import 'package:expense_app_project/pages/login_register/profile_setup_page.dart';
 import 'package:expense_app_project/pages/login_register/responsive_scroll.dart';
@@ -52,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> signInWithGoogle() async {
+    
     try {
       final provider = Provider.of<GoogleSignInProvider>(
         context,
@@ -63,16 +65,28 @@ class _LoginScreenState extends State<LoginScreen> {
       // ✅ Ensure sign-in was successful
       if (userCredential != null && userCredential.user != null) {
         userCredential.user!;
+        final user = userCredential.user;
 
         // ✅ Check if the user is signing in for the first time
-        if (userCredential.additionalUserInfo?.isNewUser ?? false) {
+        if (user != null) {
+        final doc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.email)
+            .get();
+
+        final setupComplete = doc.exists && doc.data()?['setupComplete'] == true;
+
+        if (setupComplete) {
+          // ✅ Profile is already completed
+          Navigator.pushReplacementNamed(context, "/homepage");
+        } else {
+          // ❗ Profile not yet set up
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const ProfileSetupPage()),
+            MaterialPageRoute(builder: (_) => const ProfileSetupPage()),
           );
-        } else {
-          Navigator.pushReplacementNamed(context, "/homepage");
         }
+      }
 
       } else {
         setState(() {

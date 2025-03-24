@@ -38,8 +38,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
   File? _selectedImage;
   String? _googlePhotoUrl;
 
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
@@ -57,16 +56,13 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       _emailController.text = user.email ?? '';
-      final nameParts = (user.displayName ?? '').split(' ');
-      _firstNameController.text = nameParts.isNotEmpty ? nameParts.first : '';
-      _lastNameController.text = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
+      _fullNameController.text = user.displayName ?? '';
       _googlePhotoUrl = user.photoURL;
     }
   }
 
   bool _validateInputs() {
-    if (_firstNameController.text.isEmpty ||
-        _lastNameController.text.isEmpty ||
+    if (_fullNameController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _phoneController.text.isEmpty ||
         _dobController.text.isEmpty ||
@@ -81,8 +77,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
 
   Map<String, dynamic> _gatherProfileData() {
     return {
-      "firstName": _firstNameController.text,
-      "lastName": _lastNameController.text,
+      "fullName": _fullNameController.text,
       "email": _emailController.text,
       "phone": _phoneController.text,
       "dob": _dobController.text,
@@ -126,12 +121,13 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                 CircleAvatar(
                   radius: 50,
                   backgroundImage: _selectedImage != null
-                    ? FileImage(_selectedImage!)
-                    : null,
-                  child: _selectedImage == null
-                    ? const Icon(Icons.person, size: 40, color: Colors.white)
-                    : null,
-
+                      ? FileImage(_selectedImage!)
+                      : (_googlePhotoUrl != null
+                          ? NetworkImage(_googlePhotoUrl!) as ImageProvider
+                          : null),
+                  child: _selectedImage == null && _googlePhotoUrl == null
+                      ? const Icon(Icons.person, size: 40, color: Colors.white)
+                      : null,
                 ),
                 Positioned(
                   bottom: 0,
@@ -151,8 +147,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
               ],
             ),
             const SizedBox(height: 16),
-            CustomTextField(label: "First Name", controller: _firstNameController),
-            CustomTextField(label: "Last Name", controller: _lastNameController),
+            CustomTextField(label: "Full Name", controller: _fullNameController),
             CustomTextField(label: "Email", controller: _emailController),
             CustomTextField(
               label: "Phone Number",
@@ -196,6 +191,8 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
 
                     final profileData = _gatherProfileData();
                     profileData['profileImageUrl'] = imageUrl ?? _googlePhotoUrl;
+                    profileData['setupComplete'] = true; // ✅ Add this line
+
 
                     if (user?.email != null) {
                       await FirebaseFirestore.instance

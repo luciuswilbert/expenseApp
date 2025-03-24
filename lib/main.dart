@@ -69,25 +69,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// class App extends StatelessWidget {
-//   const App({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       title: 'Expense App',
-//       theme: ThemeData(
-//         primaryColor: const Color(0xffDAA520),
-//         scaffoldBackgroundColor: Colors.white,
-//       ),
-//       home: const SplashScreen(
-//         nextScreen: OnboardingScreen(),
-//       ), // Show splash first
-//     );
-//   }
-// }
-
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 

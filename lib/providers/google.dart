@@ -35,16 +35,5 @@ class GoogleSignInProvider extends ChangeNotifier {
       debugPrint("Google Sign-In Error: $e");
       return null;
     }
-
-    // Future<void> logout() async {
-    //   try {
-    //     await googleSignIn.disconnect();
-    //     await FirebaseAuth.instance.signOut();
-    //     _user = null;
-    //     notifyListeners();
-    //   } catch (e) {
-    //     debugPrint("Google Sign-Out Error: $e");
-    //   }
-    // }
   }
 }

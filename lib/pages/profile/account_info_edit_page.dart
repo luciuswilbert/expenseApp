@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -8,28 +10,44 @@ import 'package:expense_app_project/widgets/custom_date_picker.dart';
 import 'package:expense_app_project/widgets/custom_back_button.dart';
 
 class AccountInfoEditPage extends StatefulWidget {
-  const AccountInfoEditPage({Key? key}) : super(key: key);
+  final Map<String, dynamic> initialData;
+
+  const AccountInfoEditPage({Key? key, required this.initialData}) : super(key: key);
 
   @override
   _AccountInfoEditPageState createState() => _AccountInfoEditPageState();
 }
 
 class _AccountInfoEditPageState extends State<AccountInfoEditPage> {
-  final TextEditingController _nameController = TextEditingController(
-    text: "Lucius Wilbert Tjoa",
-  );
-  final TextEditingController _emailController = TextEditingController(
-    text: "luciuswilbert@gmail.com",
-  );
-  final TextEditingController _phoneController = TextEditingController(
-    text: "+60 1112706927",
-  );
-  final TextEditingController _dobController = TextEditingController(
-    text: "28/05/2025",
-  );
-  final TextEditingController _passwordController = TextEditingController(
-    text: "mySecret123",
-  );
+  bool isGoogleSignIn = false;
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    final user = FirebaseAuth.instance.currentUser;
+    isGoogleSignIn = user?.providerData.first.providerId == "google.com";
+
+    _fullNameController.text = widget.initialData["fullName"] ?? "";
+    _emailController.text = widget.initialData["email"] ?? "";
+    _phoneController.text = widget.initialData["phone"] ?? "";
+    _dobController.text = widget.initialData["dob"] ?? "";
+    _passwordController.text = isGoogleSignIn
+        ? "Sign in with Google"
+        : widget.initialData["password"] ?? "";
+    _selectedCountry = widget.initialData["country"] ?? "Malaysia";
+  }
+
+
+
+
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
 
   final List<String> _countries = [
     "Afghanistan",
@@ -206,14 +224,10 @@ class _AccountInfoEditPageState extends State<AccountInfoEditPage> {
         backgroundColor: const Color(0xffDAA520), // Goldenrod color
         automaticallyImplyLeading: false,
         title: Stack(
-          alignment: Alignment.center, // ✅ Ensures the title stays centered
+          alignment: Alignment.center,
           children: [
-            /// ✅ Back Button (Left-Aligned)
-            const Positioned(left: 0, child: CustomBackButton()),
-
-            /// ✅ Centered Title
-            const Align(
-              alignment: Alignment.center,
+            /// Centered Title
+            const Center(
               child: Text(
                 "Edit Account Info",
                 style: TextStyle(
@@ -221,6 +235,15 @@ class _AccountInfoEditPageState extends State<AccountInfoEditPage> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
+              ),
+            ),
+
+            /// Left-Aligned Back Button
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () => Navigator.pop(context),
               ),
             ),
           ],
@@ -267,7 +290,7 @@ class _AccountInfoEditPageState extends State<AccountInfoEditPage> {
               ],
             ),
             const SizedBox(height: 16),
-            CustomTextField(label: "Full Name", controller: _nameController),
+            CustomTextField(label: "Full Name", controller: _fullNameController),
             CustomTextField(label: "Email", controller: _emailController),
             CustomTextField(
               label: "Phone Number",
@@ -290,11 +313,27 @@ class _AccountInfoEditPageState extends State<AccountInfoEditPage> {
                 controller: _dobController,
               ),
             ),
-            CustomPasswordField(
-              label: "Password",
-              controller: _passwordController,
-            ),
-
+            const SizedBox(height: 12),
+            if (isGoogleSignIn)
+              TextField(
+                readOnly: true,
+                enabled: false,
+                controller: TextEditingController(text: 'Sign in with Google'),
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                style: const TextStyle(color: Colors.grey),
+              )
+            else
+              CustomPasswordField(
+                label: "Password",
+                controller: _passwordController,
+              ),
+            
+            const SizedBox(height: 16),
             DropdownButtonFormField<String>(
               value: _selectedCountry, // Keeps the selected value
               decoration: InputDecoration(
@@ -352,8 +391,41 @@ class _AccountInfoEditPageState extends State<AccountInfoEditPage> {
                   vertical: 12,
                 ),
               ),
-              onPressed: () {
-                Navigator.pop(context);
+              onPressed: () async {
+                final user = FirebaseAuth.instance.currentUser;
+                if (user == null) {
+                  print("❌ No user logged in");
+                  return;
+                }
+
+                final Map<String, dynamic> updatedData = {
+                  "fullName": _fullNameController.text.trim(),
+                  "email": _emailController.text.trim(),
+                  "phone": _phoneController.text.trim(),
+                  "dob": _dobController.text.trim(),
+                  "password": _passwordController.text.trim(),
+                  "country": _selectedCountry,
+                  "profileImage": _selectedImage != null ? _selectedImage!.path : null, // Can be updated to Firebase Storage
+                };
+
+                try {
+                  await FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(user.email) // or user.uid
+                      .set(updatedData);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("✅ Account info updated successfully!"),
+                      backgroundColor: Colors.green,
+                      behavior: SnackBarBehavior.floating,
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                  Navigator.pop(context); // Go back after saving
+                } catch (e) {
+                  print("❌ Failed to update account info: $e");
+                }
               },
               child: const Text(
                 "Save Changes",

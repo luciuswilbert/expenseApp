@@ -64,14 +64,9 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
         backgroundColor: const Color(0xffDAA520), // Goldenrod color
         automaticallyImplyLeading: false,
         title: Stack(
-          alignment: Alignment.center, // ✅ Ensures the title stays centered
+          alignment: Alignment.center,
           children: [
-            /// ✅ Back Button (Left-Aligned)
-            const Positioned(left: 0, child: CustomBackButton()),
-
-            /// ✅ Centered Title
-            const Align(
-              alignment: Alignment.center,
+            const Center(
               child: Text(
                 "Account Info",
                 style: TextStyle(
@@ -79,6 +74,13 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () => Navigator.pop(context),
               ),
             ),
           ],
@@ -95,7 +97,7 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
               backgroundImage: AssetImage('assets/profile_placeholder.png'),
             ),
             const SizedBox(height: 16),
-            _buildInfoRow("Full Name", "${userProfile!['firstName']} ${userProfile!['lastName']}"),
+            _buildInfoRow("Full Name", userProfile!['fullName'] ?? ''),
             _buildInfoRow("Email", userProfile!['email']),
             _buildInfoRow("Phone Number", userProfile!['phone']),
             _buildInfoRow("Date of Birth", userProfile!['dob']),
@@ -118,14 +120,52 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                 "Edit Info",
                 style: TextStyle(color: Colors.white),
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AccountInfoEditPage(),
-                  ),
-                );
-              },
+              onPressed: () async {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return;
+
+  try {
+    final doc = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user.email)
+        .get();
+
+    final userData = doc.data();
+
+    if (userData != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AccountInfoEditPage(
+            initialData: userData,
+          ),
+        ),
+      ).then((_) {
+        // ✅ Re-fetch data after returning from edit page
+        setState(() {
+          isLoading = true;
+        });
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.email)
+            .get()
+            .then((doc) {
+              if (doc.exists) {
+                setState(() {
+                  userProfile = doc.data();
+                  isLoading = false;
+                });
+              }
+            });
+      });
+    } else {
+      print("❌ No user data found");
+    }
+  } catch (e) {
+    print("❌ Error fetching user data: $e");
+  }
+},
+
             ),
           ],
         ),
