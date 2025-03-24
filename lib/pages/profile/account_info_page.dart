@@ -103,7 +103,7 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
             _buildInfoRow("Date of Birth", userProfile!['dob']),
             isGoogle
               ? _buildInfoRow("Password", "Signed in with Google")
-              : _buildPasswordRow("Password", userProfile!['password'] ?? "••••••••"),
+              : _buildPasswordRow("Password", userProfile!['password'] ?? ""),
             _buildInfoRow("Country", userProfile!['country']),
 
             const SizedBox(height: 24),
@@ -121,51 +121,50 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user == null) return;
+                final user = FirebaseAuth.instance.currentUser;
+                if (user == null) return;
 
-  try {
-    final doc = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(user.email)
-        .get();
+                try {
+                  final doc = await FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(user.email)
+                      .get();
 
-    final userData = doc.data();
+                  final userData = doc.data();
 
-    if (userData != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AccountInfoEditPage(
-            initialData: userData,
-          ),
-        ),
-      ).then((_) {
-        // ✅ Re-fetch data after returning from edit page
-        setState(() {
-          isLoading = true;
-        });
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.email)
-            .get()
-            .then((doc) {
-              if (doc.exists) {
-                setState(() {
-                  userProfile = doc.data();
-                  isLoading = false;
-                });
-              }
-            });
-      });
-    } else {
-      print("❌ No user data found");
-    }
-  } catch (e) {
-    print("❌ Error fetching user data: $e");
-  }
-},
-
+                  if (userData != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AccountInfoEditPage(
+                          initialData: userData,
+                        ),
+                      ),
+                    ).then((_) {
+                      // ✅ Re-fetch data after returning from edit page
+                      setState(() {
+                        isLoading = true;
+                      });
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user.email)
+                          .get()
+                          .then((doc) {
+                            if (doc.exists) {
+                              setState(() {
+                                userProfile = doc.data();
+                                isLoading = false;
+                              });
+                            }
+                          });
+                    });
+                  } else {
+                    print("❌ No user data found");
+                  }
+                } catch (e) {
+                  print("❌ Error fetching user data: $e");
+                }
+              },
             ),
           ],
         ),

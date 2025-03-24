@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_app_project/pages/login_register/auth_theme.dart';
 import 'package:expense_app_project/pages/login_register/profile_setup_page.dart';
+import 'package:expense_app_project/pages/login_register/reset_password_screen.dart';
 import 'package:expense_app_project/pages/login_register/responsive_scroll.dart';
 import 'package:expense_app_project/providers/google.dart';
 import 'package:expense_app_project/widgets/custom_password_field.dart';
@@ -9,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:expense_app_project/providers/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -53,7 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> signInWithGoogle() async {
-    
     try {
       final provider = Provider.of<GoogleSignInProvider>(
         context,
@@ -69,25 +68,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // ✅ Check if the user is signing in for the first time
         if (user != null) {
-        final doc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.email)
-            .get();
+          final doc =
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user.email)
+                  .get();
 
-        final setupComplete = doc.exists && doc.data()?['setupComplete'] == true;
+          final setupComplete =
+              doc.exists && doc.data()?['setupComplete'] == true;
 
-        if (setupComplete) {
-          // ✅ Profile is already completed
-          Navigator.pushReplacementNamed(context, "/homepage");
-        } else {
-          // ❗ Profile not yet set up
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const ProfileSetupPage()),
-          );
+          if (setupComplete) {
+            // ✅ Profile is already completed
+            Navigator.pushReplacementNamed(context, "/homepage");
+          } else {
+            // ❗ Profile not yet set up
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const ProfileSetupPage()),
+            );
+          }
         }
-      }
-
       } else {
         setState(() {
           message = "Google Sign-In failed. Please try again.";
@@ -138,11 +138,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _passwordController,
               ),
 
-              const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ResetPasswordScreen()),
+                    );
+                  },
+                  child: const Text(
+                    "Forgot Password?",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+              ),
 
               _message(),
-
-              const SizedBox(height: 10),
 
               // Sign Up Button
               ElevatedButton(
