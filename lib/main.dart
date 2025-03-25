@@ -5,6 +5,7 @@ import 'package:expense_app_project/pages/login_register/login_screen.dart';
 import 'package:expense_app_project/pages/login_register/profile_success_screen.dart';
 import 'package:expense_app_project/pages/login_register/saving_profile_screen.dart';
 import 'package:expense_app_project/pages/login_register/sign_up_screen.dart';
+import 'package:expense_app_project/pages/summary/summary.dart';
 import 'package:expense_app_project/providers/google.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -89,6 +90,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: _getSelectedPage(_selectedIndex),
       bottomNavigationBar: CustomBottomNavigationBar(
         selectedIndex: _selectedIndex,
@@ -116,7 +118,7 @@ class _MainScreenState extends State<MainScreen> {
       case 1:
         return TransactionPage();
       case 2:
-        return const Center(child: Text("Summary (Coming Soon)"));
+        return SummaryPage();
       case 3:
       default:
         return const ProfilePage();

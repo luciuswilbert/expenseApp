@@ -12,19 +12,29 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 8.0,
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavItem(0, Icons.home, "Home"),
-          _buildNavItem(1, Icons.receipt, "Transaction"),
-          const SizedBox(width: 48), // Space for FAB
-          _buildNavItem(2, Icons.pie_chart, "Summary"),
-          _buildNavItem(3, Icons.person, "Profile"),
-        ],
+    return Container(
+       decoration: BoxDecoration(
+         boxShadow: <BoxShadow>[
+           BoxShadow(
+             color: const Color.fromARGB(64, 0, 0, 0),
+             blurRadius: 15,
+           ),
+         ],
+       ),
+       child: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildNavItem(0, Icons.home, "Home"),
+            _buildNavItem(1, Icons.receipt, "Transaction"),
+            const SizedBox(width: 48), // Space for FAB
+            _buildNavItem(2, Icons.pie_chart, "Summary"),
+            _buildNavItem(3, Icons.person, "Profile"),
+          ],
+        ),
       ),
     );
   }
