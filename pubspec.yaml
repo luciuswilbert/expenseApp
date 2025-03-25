@@ -42,6 +42,8 @@ dependencies:
   permission_handler: ^11.0.1
   fl_chart: ^0.70.2
   pie_chart: ^5.3.2
+  google_generative_ai: ^0.4.6 
+  flutter_slidable:
 
 dev_dependencies:
   flutter_test:

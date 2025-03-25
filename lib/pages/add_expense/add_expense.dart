@@ -4,6 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class AddExpensePage extends StatefulWidget {
+  final String? expenseCategory;
+  final double? totalAmount;
+  final String? description;
+
+  const AddExpensePage({
+    this.expenseCategory,
+    this.totalAmount,
+    this.description,
+    Key? key,
+  }) : super(key: key);
   @override
   _AddExpensePageState createState() => _AddExpensePageState();
 }
@@ -13,6 +23,24 @@ class _AddExpensePageState extends State<AddExpensePage> {
   final TextEditingController _descriptionController = TextEditingController();
   DateTime? _selectedDate;
   String? _selectedCategory;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Pre-fill if AI values are provided
+    if (widget.totalAmount != null) {
+      _amountController.text = widget.totalAmount!.toStringAsFixed(2);
+    }
+    if (widget.description != null) {
+      _descriptionController.text = widget.description!;
+    }
+    if (widget.expenseCategory != null) {
+      _selectedCategory = widget.expenseCategory!;
+    }
+  }
+
+
 
   void _pickDate() async {
     DateTime? pickedDate = await showDatePicker(

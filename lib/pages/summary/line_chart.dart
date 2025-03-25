@@ -5,109 +5,114 @@ import 'package:expense_app_project/pages/transaction/transaction_page.dart';
 
 class BarChartWidget extends StatelessWidget {
   final List<Map<String, dynamic>> data;
+  final double barWidthFactor = 50.0; // Adjust this value to control spacing
 
   const BarChartWidget({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(1),
-        child: BarChart(
-          BarChartData(
-            barTouchData: BarTouchData(
-              touchTooltipData: BarTouchTooltipData(
-                getTooltipColor: (_) => const Color.fromARGB(255, 115, 139, 96),
-                tooltipHorizontalAlignment: FLHorizontalAlignment.right,
-                getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                  String month = data[group.x]['month'];
-                  return BarTooltipItem(
-                    '$month\n',
-                    const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: rod.toY.toString(),
-                        style: const TextStyle(
+    return SizedBox(
+      height: 200, // Fixed height; adjust as needed
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Padding(
+          padding: const EdgeInsets.all(1),
+          child: SizedBox(
+            width: data.length * barWidthFactor, // Dynamic width based on number of bars
+            child: BarChart(
+              BarChartData(
+                barTouchData: BarTouchData(
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipColor: (_) => const Color.fromARGB(255, 115, 139, 96),
+                    tooltipHorizontalAlignment: FLHorizontalAlignment.right,
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      String month = data[group.x]['month'];
+                      return BarTooltipItem(
+                        '$month\n',
+                        const TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: rod.toY.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                titlesData: FlTitlesData(
+                  show: true,
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (double value, TitleMeta meta) {
+                        int index = value.toInt();
+                        if (index >= 0 && index < data.length) {
+                          return SideTitleWidget(
+                            meta: meta,
+                            //axisSide: meta.axisSide, // Fixed parameter name
+                            space: 16,
+                            child: Text(
+                              data[index]['month'].substring(0, 3),
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          );
+                        }
+                        return const Text('');
+                      },
+                      reservedSize: 38,
+                    ),
+                  ),
+                  leftTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                ),
+                borderData: FlBorderData(show: false),
+                gridData: const FlGridData(show: false),
+                backgroundColor: const Color.fromARGB(0, 255, 235, 59),
+                barGroups: List.generate(data.length, (i) {
+                  return BarChartGroupData(
+                    x: i,
+                    barRods: [
+                      BarChartRodData(
+                        toY: data[i]['total'].toDouble() / 1100,
+                        color: data[i]['total'].toDouble() < 1100
+                            ? const Color(0xFFDDA520)
+                            : const Color.fromARGB(255, 221, 32, 32),
+                        width: 15,
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(8),
+                          bottom: Radius.circular(8),
+                        ),
+                        backDrawRodData: BackgroundBarChartRodData(
+                          show: true,
+                          toY: 1,
+                          color: Colors.grey,
                         ),
                       ),
                     ],
                   );
-                },
+                }),
               ),
             ),
-            titlesData: FlTitlesData(
-              show: true,
-              rightTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              topTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  getTitlesWidget: (double value, TitleMeta meta) {
-                    int index = value.toInt();
-                    if (index >= 0 && index < data.length) {
-                      // Show the first letter of each month
-                      return SideTitleWidget(
-                        meta: meta,
-                        //axisSide: meta.axisSide,
-                        space: 16,
-                        child: Text(
-                          data[index]['month'].substring(0, 3),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      );
-                    }
-                    return const Text('');
-                  },
-                  reservedSize: 38,
-                ),
-              ),
-              leftTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-            ),
-            borderData: FlBorderData(show: false),
-            gridData: const FlGridData(show: false),
-            backgroundColor: const Color.fromARGB(0, 255, 235, 59), // Dark blue background like in the image
-            barGroups: List.generate(data.length, (i) {
-              
-              return BarChartGroupData(
-                x: i,
-                barRods: [
-                  BarChartRodData(
-                    toY: data[i]['total'].toDouble()/1100,
-                    color: data[i]['total'].toDouble() < 1100? Color(0XFFDDA520) : Color.fromARGB(255, 221, 32, 32),
-
-                    width: 15,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(8),
-                      bottom: Radius.circular(8),
-                    ),
-                    backDrawRodData: BackgroundBarChartRodData(
-                      show: true,
-                      toY: 1 , // Fixed maximum for background bars
-                      color: Colors.grey, // Light grey background bars
-
-                    ),
-                  ),
-                ],
-              );
-            }),
           ),
         ),
       ),
