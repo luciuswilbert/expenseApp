@@ -6,7 +6,6 @@ import 'package:expense_app_project/widgets/custom_dropdown.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
@@ -27,7 +26,170 @@ class _SettingsPageState extends State<SettingsPage> {
     text: "1000",
   );
 
-  final List<String> _currencies = ["USD", "EUR", "SGD", "MYR", "IDR"];
+  final List<String> _currencies = [
+    "AED",
+    "AFN",
+    "ALL",
+    "AMD",
+    "ANG",
+    "AOA",
+    "ARS",
+    "AUD",
+    "AWG",
+    "AZN",
+    "BAM",
+    "BBD",
+    "BDT",
+    "BGN",
+    "BHD",
+    "BIF",
+    "BMD",
+    "BND",
+    "BOB",
+    "BRL",
+    "BSD",
+    "BTN",
+    "BWP",
+    "BYN",
+    "BZD",
+    "CAD",
+    "CDF",
+    "CHF",
+    "CLP",
+    "CNY",
+    "COP",
+    "CRC",
+    "CUC",
+    "CUP",
+    "CVE",
+    "CZK",
+    "DJF",
+    "DKK",
+    "DOP",
+    "DZD",
+    "EGP",
+    "ERN",
+    "ETB",
+    "EUR",
+    "FJD",
+    "FKP",
+    "FOK",
+    "GBP",
+    "GEL",
+    "GGP",
+    "GHS",
+    "GIP",
+    "GMD",
+    "GNF",
+    "GTQ",
+    "GYD",
+    "HKD",
+    "HNL",
+    "HRK",
+    "HTG",
+    "HUF",
+    "IDR",
+    "ILS",
+    "IMP",
+    "INR",
+    "IQD",
+    "IRR",
+    "ISK",
+    "JEP",
+    "JMD",
+    "JOD",
+    "JPY",
+    "KES",
+    "KGS",
+    "KHR",
+    "KID",
+    "KMF",
+    "KRW",
+    "KWD",
+    "KYD",
+    "KZT",
+    "LAK",
+    "LBP",
+    "LKR",
+    "LRD",
+    "LSL",
+    "LYD",
+    "MAD",
+    "MDL",
+    "MGA",
+    "MKD",
+    "MMK",
+    "MNT",
+    "MOP",
+    "MRU",
+    "MUR",
+    "MVR",
+    "MWK",
+    "MXN",
+    "MYR",
+    "MZN",
+    "NAD",
+    "NGN",
+    "NIO",
+    "NOK",
+    "NPR",
+    "NZD",
+    "OMR",
+    "PAB",
+    "PEN",
+    "PGK",
+    "PHP",
+    "PKR",
+    "PLN",
+    "PYG",
+    "QAR",
+    "RON",
+    "RSD",
+    "RUB",
+    "RWF",
+    "SAR",
+    "SBD",
+    "SCR",
+    "SDG",
+    "SEK",
+    "SGD",
+    "SHP",
+    "SLE",
+    "SLL",
+    "SOS",
+    "SRD",
+    "SSP",
+    "STN",
+    "SYP",
+    "SZL",
+    "THB",
+    "TJS",
+    "TMT",
+    "TND",
+    "TOP",
+    "TRY",
+    "TTD",
+    "TVD",
+    "TWD",
+    "TZS",
+    "UAH",
+    "UGX",
+    "USD",
+    "UYU",
+    "UZS",
+    "VES",
+    "VND",
+    "VUV",
+    "WST",
+    "XAF",
+    "XCD",
+    "XOF",
+    "XPF",
+    "YER",
+    "ZAR",
+    "ZMW",
+    "ZWL",
+  ];
   final List<String> _languages = [
     "Afrikaans",
     "Albanian",
@@ -136,48 +298,72 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     final user = FirebaseAuth.instance.currentUser;
+    _loadUserSettings(); // fetch Firestore data
 
     if (user != null) {
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.email)
-          .get()
-          .then((doc) {
-        if (doc.exists) {
-          setState(() {
-            userProfile = doc.data();
-            _selectedCurrency = userProfile!['currency'];
-            _selectedLanguage = userProfile!['language'];
-            _expenseBudgetController.text = userProfile!['budget'];
-            isLoading = false;
-          });
-        }
-      });
+      FirebaseFirestore.instance.collection('users').doc(user.email).get().then(
+        (doc) {
+          if (doc.exists) {
+            setState(() {
+              userProfile = doc.data();
+              _selectedCurrency = userProfile!['currency'];
+              _selectedLanguage = userProfile!['language'];
+              _expenseBudgetController.text = userProfile!['budget'];
+              isLoading = false;
+            });
+          }
+        },
+      );
     }
   }
 
+  void _loadUserSettings() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.email)
+              .get();
+      if (doc.exists) {
+        final data = doc.data();
+        setState(() {
+          _selectedCurrency = data?['currency'] ?? _selectedCurrency;
+          _selectedLanguage = data?['language'] ?? _selectedLanguage;
+          _expenseBudgetController.text =
+              data?['budget'] ?? _expenseBudgetController.text;
+          _isDarkMode = data?['darkMode'] ?? false;
+          _notificationsEnabled = data?['notifications'] ?? true;
+          _securityEnabled = data?['security'] ?? false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     if (isLoading || userProfile == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xffDAA520), // Goldenrod color
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false, // Prevents default back button
         title: Stack(
-          alignment: Alignment.center, // ✅ Ensures the title stays centered
+          alignment: Alignment.center,
           children: [
-            /// ✅ Back Button (Left-Aligned)
-            const Positioned(
+            /// 🔙 Manual Back Button (Left-Aligned)
+            Positioned(
               left: 0,
-              child: CustomBackButton(),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () {
+                  Navigator.pop(context); // Go back
+                },
+              ),
             ),
 
-            /// ✅ Centered Title
+            /// 📝 Centered Title
             const Align(
               alignment: Alignment.center,
               child: Text(
@@ -192,6 +378,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
         ),
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -203,6 +390,7 @@ class _SettingsPageState extends State<SettingsPage> {
               selectedItem: _selectedCurrency,
               onChanged: (value) => setState(() => _selectedCurrency = value!),
             ),
+
             /// Expense Budget (Using CustomTextField)
             CustomTextField(
               label: "Expense Budget",
@@ -238,6 +426,52 @@ class _SettingsPageState extends State<SettingsPage> {
               title: "Security (PIN/Face ID)",
               value: _securityEnabled,
               onChanged: (value) => setState(() => _securityEnabled = value),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(user.email)
+                      .update({
+                        'currency': _selectedCurrency,
+                        'language': _selectedLanguage,
+                        'budget': _expenseBudgetController.text,
+                        'darkMode': _isDarkMode,
+                        'notifications': _notificationsEnabled,
+                        'security': _securityEnabled,
+                      });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Row(
+                        children: const [
+                          Icon(Icons.check_circle, color: Colors.green),
+                          SizedBox(width: 8),
+                          Text(
+                            'Settings updated successfully!',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                      backgroundColor: Colors.black87,
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  );
+                  Navigator.pop(context);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xffDAA520),
+                minimumSize: const Size(double.infinity, 50),
+              ),
+              child: const Text(
+                'Save Settings',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),

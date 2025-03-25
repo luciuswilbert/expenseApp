@@ -291,7 +291,7 @@ class _AccountInfoEditPageState extends State<AccountInfoEditPage> {
             ),
             const SizedBox(height: 16),
             CustomTextField(label: "Full Name", controller: _fullNameController),
-            CustomTextField(label: "Email", controller: _emailController),
+            // CustomTextField(label: "Email", controller: _emailController),
             CustomTextField(
               label: "Phone Number",
               controller: _phoneController,
