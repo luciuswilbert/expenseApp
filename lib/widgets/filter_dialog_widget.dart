@@ -44,7 +44,7 @@ class _FilterDialogState extends State<FilterDialog> {
             style: ButtonStyle(overlayColor: WidgetStateProperty.all(const Color.fromARGB(40, 158, 158, 158))),
             onPressed: () {
               setState(() {
-                selectedDuration = '30 days';
+                selectedDuration = 'Month'; // or 'All Time' if you prefer that as the default
                 selectedSort = 'Newest';
                 selectedCategories.clear();
               });
@@ -63,7 +63,7 @@ class _FilterDialogState extends State<FilterDialog> {
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
-              children: ['30 days', '60 days', '90 days'].map((duration) {
+              children: ['Day', 'Week', 'Month', 'Year', 'All Time'].map((duration) {
                 return ChoiceChip(
                   label: Text(duration, style: TextStyle(fontWeight: FontWeight.w700, color: Colors.black)),
                   selected: selectedDuration == duration,

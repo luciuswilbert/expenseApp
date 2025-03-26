@@ -16,7 +16,7 @@ class TransactionPage extends StatefulWidget {
 }
 
 class TransactionPageState extends State<TransactionPage> {
-  String selectedDuration = '30 days'; // Default selected duration
+  String selectedDuration = 'Month'; // Default view
   String selectedSort = 'Newest'; // Default sorting
   List<String> selectedCategories = []; // Store selected categories
 
@@ -27,9 +27,11 @@ class TransactionPageState extends State<TransactionPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
           'Transactions History',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+
         ),
         backgroundColor: const Color(0xffDAA520),
         elevation: 0,
@@ -162,16 +164,38 @@ class TransactionPageState extends State<TransactionPage> {
         .collection('transactions');
 
     // Apply duration filter
-    if (selectedDuration == '30 days') {
-      DateTime thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));
-      query = query.where('dateTime', isGreaterThanOrEqualTo: Timestamp.fromDate(thirtyDaysAgo));
-    } else if (selectedDuration == '60 days') {
-      DateTime sixtyDaysAgo = DateTime.now().subtract(const Duration(days: 60));
-      query = query.where('dateTime', isGreaterThanOrEqualTo: Timestamp.fromDate(sixtyDaysAgo));
-    } else if (selectedDuration == '90 days') {
-      DateTime ninetyDaysAgo = DateTime.now().subtract(const Duration(days: 90));
-      query = query.where('dateTime', isGreaterThanOrEqualTo: Timestamp.fromDate(ninetyDaysAgo));
+    // Apply new time period filter
+    DateTime now = DateTime.now();
+    DateTime startDate;
+
+    switch (selectedDuration) {
+      case 'Day':
+        startDate = DateTime(now.year, now.month, now.day);
+        break;
+
+      case 'Week':
+        final today = DateTime(now.year, now.month, now.day); // Strips time
+        int weekday = today.weekday; // Monday = 1, Sunday = 7
+        startDate = today.subtract(Duration(days: weekday - 1)); // Go back to Monday
+        break;
+
+
+      case 'Month':
+        startDate = DateTime(now.year, now.month, 1);
+        break;
+
+      case 'Year':
+        startDate = DateTime(now.year, 1, 1);
+        break;
+
+      case 'All Time':
+      default:
+        startDate = DateTime(2000); // A very early default
+        break;
     }
+
+    query = query.where('dateTime', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate));
+
 
     // Apply category filter
     if (selectedCategories.isNotEmpty) {

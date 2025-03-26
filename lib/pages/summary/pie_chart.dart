@@ -26,17 +26,17 @@ import 'package:pie_chart/pie_chart.dart';
  }
  
  // Category List Widget
- class CategoryListWidget extends StatelessWidget {
-   final Map<String, double> categories;
-   final Map<String, Color> colors;
-   final bool showPercentages;
- 
-   const CategoryListWidget({
-     super.key,
-     required this.categories,
-     required this.colors,
-     required this.showPercentages,
-   });
+  class CategoryListWidget extends StatelessWidget {
+    final Map<String, double> categories;
+    final Map<String, Color> colors;
+    final bool showPercentages;
+  
+    const CategoryListWidget({
+      super.key,
+      required this.categories,
+      required this.colors,
+      required this.showPercentages,
+    });
  
    @override
    Widget build(BuildContext context) {

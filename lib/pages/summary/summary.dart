@@ -14,37 +14,78 @@ import 'package:firebase_auth/firebase_auth.dart';
  }
  
  class _SummaryPageState extends State<SummaryPage> {
-   String selectedTimePeriod = 'Month';
-   String selectedChartType = 'Pie Chart';
-   bool showPercentages = false;
+  String selectedTimePeriod = 'Month';
+  String selectedChartType = 'Pie Chart';
+  bool showPercentages = false;
  
-   // Time period options
-   final List<String> timePeriods = ['Day', 'Week', 'Month', 'Year'];
+  /// Returns the start and end date range for the selected time period
+  Map<String, DateTime> getDateRangeForSelectedPeriod() {
+    final now = DateTime.now();
+    late DateTime startDate;
+    late DateTime endDate;
+
+    switch (selectedTimePeriod) {
+      case 'Day':
+        startDate = DateTime(now.year, now.month, now.day);
+        endDate = startDate.add(const Duration(days: 1));
+        break;
+
+      case 'Week':
+        // Ensure Monday is always the start of the week
+        final today = DateTime(now.year, now.month, now.day);
+        final int currentWeekday = today.weekday; // Monday = 1, Sunday = 7
+        startDate = today.subtract(Duration(days: currentWeekday - 1)); // Monday
+        endDate = startDate.add(const Duration(days: 7)); // Next Monday (exclusive)
+        break;
+
+
+      case 'Month':
+        startDate = DateTime(now.year, now.month, 1);
+        endDate = DateTime(now.year, now.month + 1, 1);
+        break;
+
+      case 'Year':
+        startDate = DateTime(now.year, 1, 1);
+        endDate = DateTime(now.year + 1, 1, 1);
+        break;
+
+      case 'All Time':
+      default:
+        startDate = DateTime(2000); // A very early default
+        endDate = now.add(const Duration(days: 1)); // Include today's data
+        break;
+    }
+
+    return {'start': startDate, 'end': endDate};
+  }
+
+
+  // Time period options
+  List<String> get timePeriods {
+    if (selectedChartType == 'Pie Chart') {
+      return ['Day', 'Week', 'Month', 'Year', 'All Time'];
+    }
+    return ['Day', 'Week', 'Month', 'Year'];
+  }
+
   
    /// Builds a dynamic Firestore query based on filters
   Query getTransactionsQuery(final user) {
+    final range = getDateRangeForSelectedPeriod();
+    final start = range['start']!;
+    final end = range['end']!;
+
     Query query = FirebaseFirestore.instance
         .collection('users')
         .doc(user.email)
-        .collection('transactions');
-
-    query = query.orderBy('amount', descending: true).limit(3);
-    // Add more sorting options as needed
+        .collection('transactions')
+        .where('dateTime', isGreaterThanOrEqualTo: start)
+        .where('dateTime', isLessThan: end)
+        .orderBy('dateTime', descending: true);
 
     return query;
   }
-   // Dummy data (replace with your actual data source)
-   final Map<String, double> categoryData = {
-     'Housing': 120,
-     'Utilities': 80,
-     'Food': 32,
-     'Subscription':32,
-     'Groceries': 300,
-     'Shopping' : 100,
-     'Healthcare' : 30,
-     'Transportation' : 50,
-     'Miscellaneous': 140
-   };
+
  
    final Map<String, Color> categoryColors = {
      'Housing': getCategoryColor('Housing'),
@@ -73,30 +114,7 @@ import 'package:firebase_auth/firebase_auth.dart';
      {'month': 'Dec', 'total': 1000.0},
     
    ];
- 
-   /*final List<Map<String, dynamic>> topTransactions = [{
-     'category': 'Groceries',
-     'description': 'Buy some grocery items from the supermarket',
-     'amount': 120.00,
-     'dateTime': '28 Feb @ 10:00 AM',
-     'color': const Color(0xFFFCEED4), // Background color of the card
-   },
-   {
-     'category': 'Subscription',
-     'description': 'Disney+ Annual subscription renewal',
-     'amount': 80.00,
-     'dateTime': '28 Feb @ 03:30 PM',
-     'color': const Color(0xFFEADDCB), // Light beige
-   },
-   {
-     'category': 'Food',
-     'description': 'Buy a ramen from the local restaurant',
-     'amount': 32.00,
-     'dateTime': '28 Feb @ 07:30 PM',
-     'color': const Color(0xFFE1DEBC), // Light green
-   },
-   ];
- */
+
    @override
    Widget build(BuildContext context) {
       final user = FirebaseAuth.instance.currentUser; 
@@ -127,6 +145,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
           // Parse Firestore data into a list
           List<Map<String, dynamic>> transactions = snapshot.data!.docs.map((doc) {
+
+            // Create categoryData from the fetched transactions
             var data = doc.data() as Map<String, dynamic>;
             return {
               'id': doc.id, // Document ID for editing/deleting
@@ -136,6 +156,33 @@ import 'package:firebase_auth/firebase_auth.dart';
               'dateTime': (data['dateTime'] as Timestamp).toDate(), // Convert Timestamp to DateTim
             };
           }).toList();
+
+          // Group the transactions by category and calculate the total for each
+          Map<String, double> categoryData = {
+            'Housing': 0,
+            'Utilities': 0,
+            'Food': 0,
+            'Subscription': 0,
+            'Groceries': 0,
+            'Shopping': 0,
+            'Healthcare': 0,
+            'Transportation': 0,
+            'Miscellaneous': 0,
+          };
+
+          for (var txn in transactions) {
+            String category = txn['category'];
+            double amount = txn['amount'];
+
+            categoryData[category] = (categoryData[category] ?? 0) + amount;
+          }
+
+        final sortedCategoryData = Map.fromEntries(
+          categoryData.entries.toList()
+            ..sort((a, b) => b.value.compareTo(a.value)),
+        );
+
+
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -172,6 +219,7 @@ import 'package:firebase_auth/firebase_auth.dart';
                   setState(() {
                     selectedChartType = value!;
                     // Reset percentage toggle when switching charts
+                    if (selectedChartType == 'Pie Chart') {}
                     if (selectedChartType == 'Line Chart') showPercentages = false;
                   });
                 },
@@ -207,24 +255,24 @@ import 'package:firebase_auth/firebase_auth.dart';
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Top Spending',
-                  style: TextStyle(
+                  selectedChartType == 'Pie Chart' ? 'Categories' : 'Top Spending',
+                  style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 0, 0, 0),
+                    color: Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
               ),
+
               // Dynamic bottom section
               if (selectedChartType == 'Pie Chart')
                 CategoryListWidget(
-                  categories: categoryData,
+                  categories: sortedCategoryData,
                   colors: categoryColors,
                   showPercentages: showPercentages,
                 )
               else
                   TransactionListWidget(transactions: transactions),
-  
             ],
           ),
         );
