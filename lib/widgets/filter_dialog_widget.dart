@@ -65,7 +65,7 @@ class _FilterDialogState extends State<FilterDialog> {
               spacing: 8,
               children: ['30 days', '60 days', '90 days'].map((duration) {
                 return ChoiceChip(
-                  label: Text(duration, style: TextStyle(fontWeight: FontWeight.w700)),
+                  label: Text(duration, style: TextStyle(fontWeight: FontWeight.w700, color: Colors.black)),
                   selected: selectedDuration == duration,
                   onSelected: (selected) {
                     if (selected){
@@ -74,7 +74,7 @@ class _FilterDialogState extends State<FilterDialog> {
                       });
                     }
                   },
-                  selectedColor: Color(0xffFFF5BF),
+                  selectedColor: Color(0xffDAA520),
                   backgroundColor: Colors.white,
                 );
               }).toList(),
@@ -88,7 +88,7 @@ class _FilterDialogState extends State<FilterDialog> {
               spacing: 8,
               children: ['Highest', 'Lowest', 'Newest', 'Oldest'].map((sort) {
                 return ChoiceChip(
-                  label: Text(sort, style: TextStyle(fontWeight: FontWeight.w700)),
+                  label: Text(sort, style: TextStyle(fontWeight: FontWeight.w700,color: Colors.black)),
                   selected: selectedSort == sort,
                   onSelected: (selected) {
                     if (selected){
@@ -97,7 +97,7 @@ class _FilterDialogState extends State<FilterDialog> {
                       });
                     }
                   },
-                  selectedColor: Color(0xffFFF5BF),
+                  selectedColor: Color(0xffdaa520),
                   backgroundColor: Colors.white,
                 );
               }).toList(),

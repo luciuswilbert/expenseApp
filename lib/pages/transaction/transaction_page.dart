@@ -4,6 +4,9 @@ import 'package:expense_app_project/data/transaction_data.dart'; // ✅ Import t
 import 'package:expense_app_project/utils/transaction_helpers.dart'; // ✅ Import helper functions
 import 'package:expense_app_project/widgets/filter_dialog_widget.dart'; // ✅ Import filter dialog
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart'; // For date formatting
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({Key? key}) : super(key: key);
@@ -13,116 +16,199 @@ class TransactionPage extends StatefulWidget {
 }
 
 class TransactionPageState extends State<TransactionPage> {
-  /// ✅ Declare State Variables
   String selectedDuration = '30 days'; // Default selected duration
   String selectedSort = 'Newest'; // Default sorting
   List<String> selectedCategories = []; // Store selected categories
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContextContext) {
+    final user = FirebaseAuth.instance.currentUser; // Get current user's ID
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           'Transactions History',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xffDAA520),
         elevation: 0,
         actions: [
-          /// ✅ Filter Icon (Top Right)
           IconButton(
             icon: const Icon(Icons.filter_list, color: Colors.black),
             onPressed: () {
-              _showFilterDialog(); // ✅ Open the filter dialog
+              _showFilterDialog(); // Open the filter dialog
             },
           ),
         ],
-        automaticallyImplyLeading: false, // Remove back arrow
+        automaticallyImplyLeading: false,
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.only(top: 8.0, bottom: 80.0, left: 8.0, right: 8.0),
-        itemCount: transactions.length,
-        itemBuilder: (context, index) {
-          final transaction = transactions[index];
-          return Container(
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10), 
-            child: ClipPath(
-              clipper: RoundedRectClipper(radius: 24.0), // Match your card’s radius
-              child: Slidable(
-                closeOnScroll: true,
-                key: Key(index.toString()),  // Use a unique key (e.g., index or transaction ID if available)
-                endActionPane: ActionPane(
-                  motion: const StretchMotion(),  // Defines how the actions slide in
-                  children: [
-                    CustomSlidableAction(
-                      onPressed: (context) {
-                      // Action for the second button
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AddExpensePage(
-                              expenseCategory: transaction['category'],
-                              totalAmount: transaction['amount'],
-                              description: transaction['description'],
-                            ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: getTransactionsQuery(user).snapshots(),
+        builder: (context, snapshot) {
+          // Handle loading state
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          // Handle error state
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          // Handle no data state
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text('No transactions found.'));
+          }
+
+          // Parse Firestore data into a list
+          List<Map<String, dynamic>> transactions = snapshot.data!.docs.map((doc) {
+            var data = doc.data() as Map<String, dynamic>;
+            return {
+              'id': doc.id, // Document ID for editing/deleting
+              'category': data['category'],
+              'description': data['description'],
+              'amount': data['amount'],
+              'dateTime': (data['dateTime'] as Timestamp).toDate(), // Convert Timestamp to DateTime
+            };
+          }).toList();
+
+          // Build the transaction list
+          return ListView.builder(
+            padding: const EdgeInsets.only(top: 8.0, bottom: 80.0, left: 8.0, right: 8.0),
+            itemCount: transactions.length,
+            itemBuilder: (context, index) {
+              final transaction = transactions[index];
+              return Container(
+                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                child: ClipPath(
+                  clipper: RoundedRectClipper(radius: 24.0),
+                  child: Slidable(
+                    closeOnScroll: true,
+                    key: Key(transaction['id']), // Use document ID as unique key
+                    endActionPane: ActionPane(
+                      motion: const StretchMotion(),
+                      children: [
+                        CustomSlidableAction(
+                          onPressed: (context) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddExpensePage(
+                                  expenseCategory: transaction['category'],
+                                  totalAmount: transaction['amount'],
+                                  description: transaction['description'],
+                                  transactionId: transaction['id'], // Pass ID for editing
+                                ),
+                              ),
+                            );
+                          },
+                          backgroundColor: const Color(0xffdaa520),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.edit, color: Colors.white, size: 26),
+                              SizedBox(height: 4),
+                            ],
                           ),
-                        );
-                      },
-                      backgroundColor: Color(0xffdaa520),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.edit, color: Colors.white,size: 26,), // Icon color
-                          SizedBox(height: 4), // Spacing between icon and text
-                          
-                        ],
+                        ),
+                        CustomSlidableAction(
+                          onPressed: (context) {
+                            deleteTransaction(user, transaction['id']);
+                          },
+                          backgroundColor: Colors.red,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.delete, color: Colors.white, size: 26),
+                              SizedBox(height: 4),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    child: TransactionCard(
+                      icon: Icon(
+                        getCategoryIcon(transaction['category']),
+                        color: getCategoryColor(transaction['category']),
+                      ),
+                      category: transaction['category'],
+                      amount: transaction['amount'],
+                      dateTime: formatDateTime(transaction['dateTime']),
+                      //color: getBgCategoryColor(transaction['category']),
+                      onTap: () => showDescriptionDialog(
+                        context,
+                        transaction['category'],
+                        transaction['description'],
+                        getBgCategoryColor(transaction['category']),
+                        getCategoryColor(transaction['category']),
                       ),
                     ),
-                    CustomSlidableAction(
-                      onPressed: (context) {
-                      // Action for the second button
-                      setState(() {
-                          transactions.removeAt(index);
-                        });
-                      },
-                      backgroundColor: Colors.red,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.delete, color: Colors.white,size: 26,), // Icon color
-                          SizedBox(height: 4), // Spacing between icon and text
-                          
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                child: TransactionCard(
-                  icon: Icon(
-                    getCategoryIcon(transaction['category']),
-                    color: getCategoryColor(transaction['category']),
-                  ),
-                  category: transaction['category'],
-                  amount: transaction['amount'],
-                  dateTime: transaction['dateTime'],
-                  color: transaction['color'],
-                  onTap: () => showDescriptionDialog(
-                    context,
-                    transaction['category'],
-                    transaction['description'],
-                    transaction['color'],
-                    getCategoryColor(transaction['category']),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),
     );
   }
 
-  /// ✅ Function to show the Filter Dialog
+  /// Builds a dynamic Firestore query based on filters
+  Query getTransactionsQuery(final user) {
+    Query query = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.email)
+        .collection('transactions');
+
+    // Apply duration filter
+    if (selectedDuration == '30 days') {
+      DateTime thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));
+      query = query.where('dateTime', isGreaterThanOrEqualTo: Timestamp.fromDate(thirtyDaysAgo));
+    } else if (selectedDuration == '60 days') {
+      DateTime sixtyDaysAgo = DateTime.now().subtract(const Duration(days: 60));
+      query = query.where('dateTime', isGreaterThanOrEqualTo: Timestamp.fromDate(sixtyDaysAgo));
+    } else if (selectedDuration == '90 days') {
+      DateTime ninetyDaysAgo = DateTime.now().subtract(const Duration(days: 90));
+      query = query.where('dateTime', isGreaterThanOrEqualTo: Timestamp.fromDate(ninetyDaysAgo));
+    }
+
+    // Apply category filter
+    if (selectedCategories.isNotEmpty) {
+      query = query.where('category', whereIn: selectedCategories);
+    }
+
+    // Apply sorting
+    if (selectedSort == 'Newest') {
+      query = query.orderBy('dateTime', descending: true);
+    } else if (selectedSort == 'Oldest') {
+      query = query.orderBy('dateTime', descending: false);
+    } else if (selectedSort == 'Highest') {
+      query = query.orderBy('amount', descending: true);
+    } else if (selectedSort == 'Lowest') {
+      query = query.orderBy('amount', descending: false);
+    }
+
+    return query;
+  }
+
+  /// Deletes a transaction from Firestore
+  void deleteTransaction(final user, String transactionId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.email)
+          .collection('transactions')
+          .doc(transactionId)
+          .delete();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to delete transaction: $e")),
+      );
+    }
+  }
+
+  /// Shows the filter dialog
   void _showFilterDialog() {
     showDialog(
       context: context,
@@ -139,6 +225,11 @@ class TransactionPageState extends State<TransactionPage> {
         },
       ),
     );
+  }
+
+  /// Formats DateTime for display
+  String formatDateTime(DateTime dateTime) {
+    return DateFormat('dd MMM @ hh:mm a').format(dateTime);
   }
 }
 
@@ -203,7 +294,6 @@ class TransactionCard extends StatelessWidget {
   final String category;
   final double amount;
   final String dateTime;
-  final Color color;
   final VoidCallback onTap;
 
   const TransactionCard({
@@ -212,7 +302,6 @@ class TransactionCard extends StatelessWidget {
     required this.category,
     required this.amount,
     required this.dateTime,
-    required this.color,
     required this.onTap,
   });
 
@@ -224,7 +313,7 @@ class TransactionCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: color,
+          color: getBgCategoryColor(category),
         ),
         child: Row(
           children: [

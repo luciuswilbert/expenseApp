@@ -2,7 +2,8 @@ import 'package:expense_app_project/utils/transaction_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:expense_app_project/pages/transaction/transaction_page.dart';
-import 'package:expense_app_project/data/transaction_data.dart'; // ✅ Import transaction data
+import 'package:expense_app_project/data/transaction_data.dart';
+import 'package:intl/intl.dart'; // ✅ Import transaction data
 
 
 class BarChartWidget extends StatelessWidget {
@@ -134,6 +135,10 @@ class TransactionListWidget extends StatelessWidget {
   final List<Map<String, dynamic>> transactions;
   const TransactionListWidget({super.key, required this.transactions});
 
+  /// Formats DateTime for display
+  String formatDateTime(DateTime dateTime) {
+    return DateFormat('dd MMM @ hh:mm a').format(dateTime);
+  }
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -147,23 +152,24 @@ class TransactionListWidget extends StatelessWidget {
             child: ClipPath(
               clipper: RoundedRectClipper(radius: 24.0), // Match your card’s radius
               child: TransactionCard(
-              icon: Icon(
-                getCategoryIcon(transaction['category']), // ✅ Assign icon dynamically
-                color: getCategoryColor(transaction['category']), // ✅ Assign color dynamically
-              ),
-              category: transaction['category'],
-              amount: transaction['amount'],
-              dateTime: transaction['dateTime'],
-              color: transaction['color'],
-              onTap: () => showDescriptionDialog(
-                context,
-                transaction['category'],
-                transaction['description'],
-                transaction['color'],
-                getCategoryColor(transaction['category']), // ✅ Fetch dynamic icon color
+                icon: Icon(
+                  getCategoryIcon(transaction['category']), // ✅ Assign icon dynamically
+                  color: getCategoryColor(transaction['category']), // ✅ Assign color dynamically
+                ),
+                category: transaction['category'],
+                amount: transaction['amount'],
+                dateTime: formatDateTime(transaction['dateTime']),
+                //color: getBgCategoryColor(transaction['category']),
+                onTap: () => showDescriptionDialog(
+                  context,
+                  transaction['category'],
+                  transaction['description'],
+                  getBgCategoryColor(transaction['category']),
+                  getCategoryColor(transaction['category']), // ✅ Fetch dynamic icon color
+                ),
               ),
             ),
-          ),);
+          );
         },
       );
   }

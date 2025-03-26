@@ -31,3 +31,19 @@ Color getCategoryColor(String category) {
     default: return Colors.grey;
   }
 }
+
+/// ✅ Function to dynamically assign background colors based on category
+Color getBgCategoryColor(String category) {
+  switch (category) {
+    case 'Groceries': return const Color(0xFFFCEED4);
+    case 'Subscription': return const Color(0xFFEADDCB);
+    case 'Food': return const Color(0xFFE1DEBC);
+    case 'Shopping': return const Color(0xFFFFD8D1);
+    case 'Miscellaneous': return const Color(0xFFFAFAD2);
+    case 'Healthcare': return const Color(0xFFFFE1F0);
+    case 'Transportation': return const Color(0xFFB0E0E6);
+    case 'Utilities': return const Color(0xFFD8BFD8);
+    case 'Housing': return const Color(0xFFFFA07A);
+    default: return Colors.grey;
+  }
+}

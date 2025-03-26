@@ -71,7 +71,9 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     if (isLoading || userProfile == null) {
       return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+        backgroundColor: Colors.white,
+        body: Center(child: CircularProgressIndicator(
+          color: Color(0xffdaa520),)),
       );
     }
 

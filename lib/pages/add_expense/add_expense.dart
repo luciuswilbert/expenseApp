@@ -1,19 +1,28 @@
+import 'dart:math';
+
+import 'package:expense_app_project/main.dart';
+import 'package:expense_app_project/pages/home/home_page.dart';
 import 'package:expense_app_project/utils/transaction_helpers.dart';
 import 'package:expense_app_project/widgets/custom_three_dot_menu.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddExpensePage extends StatefulWidget {
   final String? expenseCategory;
   final double? totalAmount;
   final String? description;
+  final String? transactionId;
 
   const AddExpensePage({
     this.expenseCategory,
     this.totalAmount,
     this.description,
+    this.transactionId,
     Key? key,
   }) : super(key: key);
+
   @override
   _AddExpensePageState createState() => _AddExpensePageState();
 }
@@ -24,40 +33,93 @@ class _AddExpensePageState extends State<AddExpensePage> {
   DateTime? _selectedDate;
   String? _selectedCategory;
 
+  void addOrUpdateTransaction(final user, Map<String, dynamic> transactionData, {String? transactionId}) async {
+    bool success = false;
+    try {
+      if (transactionId == null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.email)
+            .collection('transactions')
+            .add(transactionData);
+        success = true; // Set to true on success
+      } else {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.email)
+            .collection('transactions')
+            .doc(transactionId)
+            .update(transactionData);
+        success = true; // Set to true on success
+      }
+    } catch (error) {
+      success = false; // Set to false on error
+      print('Error saving transaction: $error'); // Log the error
+    }
+
+    if (success) {
+      //Only show the dialog when success is true.
+      showExpenseAddedDialog(context);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    
-    // Pre-fill if AI values are provided
-    if (widget.totalAmount != null) {
-      _amountController.text = widget.totalAmount!.toStringAsFixed(2);
+    if (widget.transactionId != null) {
+      _fetchTransactionData(widget.transactionId!);
+    } else {
+      if (widget.totalAmount != null) {
+        _amountController.text = widget.totalAmount!.toStringAsFixed(2);
+      }
+      if (widget.description != null) {
+        _descriptionController.text = widget.description!;
+      }
+      if (widget.expenseCategory != null) {
+        _selectedCategory = widget.expenseCategory!;
+      }
     }
-    if (widget.description != null) {
-      _descriptionController.text = widget.description!;
-    }
-    if (widget.expenseCategory != null) {
-      _selectedCategory = widget.expenseCategory!;
+  }
+
+  void _fetchTransactionData(String transactionId) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.email)
+        .collection('transactions')
+        .doc(transactionId)
+        .get();
+      if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>;
+        setState(() {
+         _selectedCategory = data['category'];
+        _amountController.text = data['amount'].toStringAsFixed(2);
+        _descriptionController.text = data['description'];
+        _selectedDate = (data['dateTime'] as Timestamp).toDate();
+        });
+      }
     }
   }
 
   void _pickDate() async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2050),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            dialogBackgroundColor: Colors.white, // ✅ Makes background white
+            dialogBackgroundColor: Colors.white,
             colorScheme: const ColorScheme.light(
-              primary: Color(0xffDAA520), // ✅ Goldenrod for selected date
-              onPrimary: Colors.white, // ✅ Ensures selected date text is visible
-              onSurface: Colors.black, // ✅ Black text for dates
+              primary: Color(0xffDAA520),
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: Colors.black, // ✅ Black text for buttons
+                foregroundColor: Colors.black,
               ),
             ),
           ),
@@ -72,23 +134,21 @@ class _AddExpensePageState extends State<AddExpensePage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-  title: const Text(
-    'Add Expense',
-    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-  ),
-  backgroundColor: const Color(0xffDAA520), // Goldenrod
-  centerTitle: true,
-  actions: [
-    CustomThreeDotMenu(context: context), // ✅ Now handles navigation inside the widget
-  ],
-),
-
-
+        title: const Text(
+          'Add Expense',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        backgroundColor: const Color(0xffDAA520),
+        centerTitle: true,
+        actions: [
+          CustomThreeDotMenu(context: context),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -97,19 +157,12 @@ class _AddExpensePageState extends State<AddExpensePage> {
             children: [
               _buildLabel('Category'),
               _buildDropdown(),
-
               const SizedBox(height: 12),
               _buildLabel('Amount'),
-              _buildTextField(
-                _amountController,
-                TextInputType.number,
-                prefixText: '\$',
-              ),
-
+              _buildTextField(_amountController, TextInputType.number, prefixText: '\$'),
               const SizedBox(height: 12),
               _buildLabel('Date'),
               _buildDateField(),
-
               const SizedBox(height: 12),
               _buildLabel('Description'),
               _buildTextField(
@@ -118,23 +171,32 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 maxLines: 3,
                 hintText: 'Buying a Ramen',
               ),
-
               const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    print("submit pressed");
+                    if (_selectedCategory == null || _amountController.text.isEmpty || _selectedDate == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Please fill all required fields")),
+                      );
+                      return;
+                    }
+                    Map<String, dynamic> transactionData = {
+                      'category': _selectedCategory!,
+                      'description': _descriptionController.text,
+                      'amount': double.parse(_amountController.text),
+                      'dateTime': Timestamp.fromDate(_selectedDate!),
+                      'color': getCategoryColor(_selectedCategory!).value,
+                    };
+                    final user = FirebaseAuth.instance.currentUser;
+                    addOrUpdateTransaction(user, transactionData, transactionId: widget.transactionId);    
+                    //showExpenseAddedDialog(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xffDAA520), // Goldenrod
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 15,
-                    ),
+                    backgroundColor: const Color(0xffDAA520),
+                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        12,
-                      ), // Rounded corners
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: const Text(
@@ -149,6 +211,9 @@ class _AddExpensePageState extends State<AddExpensePage> {
       ),
     );
   }
+
+  // Keep your existing _buildLabel, _buildDropdown, _buildTextField, and _buildDateField methods unchanged
+
 
   /// Reusable label widget
   Widget _buildLabel(String text) {
@@ -304,3 +369,49 @@ class _AddExpensePageState extends State<AddExpensePage> {
     );
   }
 }
+
+
+void showExpenseAddedDialog(BuildContext context) {
+  List<String> motivationalMessages = [
+    "Great job! Every penny tracked counts!",
+    "You're on your way to financial clarity!",
+    "Keep it up! Your future self will thank you.",
+    "Small steps lead to big savings!",
+    "You're making progress! Stay consistent."
+  ];
+
+  final random = Random();
+  final message = motivationalMessages[random.nextInt(motivationalMessages.length)];
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Expense Added!"),
+        backgroundColor: Colors.white,
+        content: Column(
+          mainAxisSize: MainAxisSize.min, // Adjust to content size
+          children: [
+            //const Text("Your expense has been successfully added."),
+            const SizedBox(height: 16),
+            Text(
+              message,
+              style: const TextStyle(fontStyle: FontStyle.italic),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("OK",style: TextStyle(color: Colors.green),),
+            style: ButtonStyle(alignment: Alignment.center),
+            onPressed: () {
+              Navigator.push(context,MaterialPageRoute(builder: (context) => MainScreen()));
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+

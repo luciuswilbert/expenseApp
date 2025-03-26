@@ -264,8 +264,8 @@ Ensure that the JSON output is correctly formatted and does not contain extra ex
                     ),
                   );
 
-                  print('GEMINI RESPONSE:');
-                  print(_geminiResponse);
+                  // print('GEMINI RESPONSE:');
+                  // print(_geminiResponse);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xffDAA520), // ✅ Goldenrod color
