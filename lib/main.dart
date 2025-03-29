@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:google_speech/google_speech.dart';
 import 'package:google_speech/speech_client_authenticator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -39,6 +40,7 @@ class _RecorderScreenState extends State<RecorderScreen> {
   String? _recordedFilePath;
 
   String? _recognizedText='text to be recognized';
+  String? _responseText='categorized text';
 
   @override
   void initState() {
@@ -124,7 +126,46 @@ class _RecorderScreenState extends State<RecorderScreen> {
         //jsonControlledGeneration(_recognizedText);
       });
     });
+  }
 
+  Future<void> jsonControlledGeneration(sentence) async {
+    final schema = Schema.object(properties: {
+      'category': Schema.enumString(
+        enumValues: [
+          'Shopping',
+          'Subscription',
+          'Food',
+          'Healthcare',
+          'Groceries',
+          'Transportation',
+          'Utilities',
+          'Housing',
+          'Miscellaneous'
+        ],
+        description: 'Expense category chosen from predefined options.',
+        nullable: true,
+      ),
+      'amount': Schema.number(description: 'Expense Total Amount', nullable: true),
+      'description': Schema.string(description: 'Short description of the expense (in 1 line)', nullable: true),
+    });
+
+    final model = GenerativeModel(
+      model: 'gemini-2.0-flash',
+      apiKey: 'AIzaSyDReqVkKB-d5f4U9gr06wdGbsyXrt9Q8eQ',
+      generationConfig: GenerationConfig(
+        responseMimeType: 'application/json',
+        responseSchema: schema,
+      ),
+    );
+
+    final prompt = 'Extract expense details from this sentence: $sentence . '
+      'Return a JSON with category, amount, and description fields. '
+      'The category must be one of: Shopping, Subscription, Food, Healthcare, Groceries Transportation, Utilities, Housing, or Miscellaneous. If unsure, set category to null.';
+
+    final response = await model.generateContent([Content.text(prompt)]);
+    setState(() {
+      _responseText = response.text!; // Update the state variable with the response text
+    });
   }
 
   @override
@@ -171,6 +212,15 @@ class _RecorderScreenState extends State<RecorderScreen> {
                     child: const Text('Transcribe'),
                   ),
                   Padding(padding: EdgeInsets.all(8),child:Text("Recongized text: ${_recognizedText!}",style: TextStyle(fontSize: 20),)
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed:()=>{  _isRecording ? null : jsonControlledGeneration(
+                      _recognizedText
+                    )},
+                    child: const Text('Categorize'),
+                  ),
+                  Padding(padding: EdgeInsets.all(8),child:Text("Response text: ${_responseText!}",style: TextStyle(fontSize: 20),)
                   ),
                 ]
               ),
