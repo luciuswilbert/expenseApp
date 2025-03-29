@@ -3,6 +3,7 @@ import 'package:expense_app_project/pages/summary/bar_chart.dart';
 import 'package:expense_app_project/pages/summary/pie_chart.dart';
 import 'package:expense_app_project/pages/summary/summary_logic.dart';
 import 'package:expense_app_project/utils/transaction_helpers.dart';
+import 'package:expense_app_project/widgets/custom_toggle.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class _SummaryPageState extends State<SummaryPage> {
   String selectedTimePeriod = 'Month';
   String selectedChartType = 'Pie Chart';
   bool showPercentages = false;
+  bool state=true;
 
   final Map<String, Color> categoryColors = {
     'Housing': getCategoryColor('Housing'),
@@ -146,7 +148,6 @@ class _SummaryPageState extends State<SummaryPage> {
               final userData = userSnapshot.data!.data() as Map<String, dynamic>;
               final monthlyBudget = double.tryParse(userData['budget'].toString()) ?? 0.0;
               final barChartData = generateBarChartData(transactions, monthlyBudget, selectedTimePeriod);
-
               final sortedCategoryData = Map.fromEntries(
                 categoryData.entries.toList()..sort((a, b) => b.value.compareTo(a.value)),
               );
@@ -171,24 +172,40 @@ class _SummaryPageState extends State<SummaryPage> {
                       )).toList(),
                     ),
                     const SizedBox(height: 16),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: DropdownButton<String>(
-                        dropdownColor: Colors.white,
-                        value: selectedChartType,
-                        items: ['Pie Chart', 'Bar Chart'].map((type) => DropdownMenuItem(
-                          value: type,
-                          child: Text(type),
-                        )).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedChartType = value!;
-                            if (selectedChartType == 'Pie Chart') {}
-                            if (selectedChartType == 'Line Chart') showPercentages = false;
-                          });
-                        },
-                        focusColor: Colors.white,
-                      ),
+                    
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Checkbox(
+                          value: state,
+                          activeColor: Color(0xffdaa520),
+                          onChanged: (bool? newValue) { // Corrected onChanged 
+                            if (newValue != null) { // Handle null case
+                              setState(() {
+                                state = newValue; // Update state with the new value
+                              });
+                            }
+                          },
+                        ),
+                        Align(
+                          child: DropdownButton<String>(
+                            dropdownColor: Colors.white,
+                            value: selectedChartType,
+                            items: ['Pie Chart', 'Bar Chart'].map((type) => DropdownMenuItem(
+                              value: type,
+                              child: Text(type),
+                            )).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedChartType = value!;
+                                if (selectedChartType == 'Pie Chart') {}
+                                if (selectedChartType == 'Line Chart') showPercentages = false;
+                              });
+                            },
+                            focusColor: Colors.white,
+                          ),
+                        )
+                      ],
                     ),
                     const SizedBox(height: 16),
                     if (selectedChartType == 'Pie Chart') ...[

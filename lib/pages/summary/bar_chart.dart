@@ -26,19 +26,14 @@ class BarChartWidget extends StatelessWidget {
                 50, // Dynamic width based on number of bars
             child: BarChart(
               BarChartData(
-                maxY:
-                    data
-                        .map((e) => e['total'] as double)
-                        .reduce((a, b) => a > b ? a : b) +
-                    100,
                 barTouchData: BarTouchData(
                   touchTooltipData: BarTouchTooltipData(
                     getTooltipColor:
                         (_) => const Color.fromARGB(255, 115, 139, 96),
-                    tooltipHorizontalAlignment: FLHorizontalAlignment.right,
+                    tooltipHorizontalAlignment: FLHorizontalAlignment.center,
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       String label = data[group.x]['label'];
-
+                      double value = rod.toY * data[group.x]['expected'];
                       return BarTooltipItem(
                         '$label\n',
                         const TextStyle(
@@ -48,7 +43,7 @@ class BarChartWidget extends StatelessWidget {
                         ),
                         children: <TextSpan>[
                           TextSpan(
-                            text: rod.toY.toString(),
+                            text: value.toString(),
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -105,7 +100,7 @@ class BarChartWidget extends StatelessWidget {
                     x: i,
                     barRods: [
                       BarChartRodData(
-                        toY: (data[i]['total'] as num).toDouble(),
+                        toY: (data[i]['total'] as num).toDouble()/(data[i]['expected'] as num).toDouble(),
                         color:
                             (data[i]['total'] as num).toDouble() <=
                                     (data[i]['expected'] as num).toDouble()
@@ -124,8 +119,8 @@ class BarChartWidget extends StatelessWidget {
                         ),
                         backDrawRodData: BackgroundBarChartRodData(
                           show: true,
-                          toY: 1,
-                          color: Colors.grey,
+                          toY:1,
+                          color: const Color.fromARGB(255, 189, 189, 189),
                         ),
                       ),
                     ],

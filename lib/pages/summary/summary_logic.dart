@@ -39,16 +39,16 @@ List<String> getTimePeriodLabels(
 }
 
 double calculateExpectedSlot(String selectedTimePeriod, double monthlyBudget) {
+      int daysInMonth = DateTime.now().month + 1;
   switch (selectedTimePeriod) {
     case 'Day':
-      return monthlyBudget / 30 / 24;
+      return monthlyBudget / DateTime(DateTime.now().year, daysInMonth, 0).day / 4;
     case 'Week':
-      return monthlyBudget / 4 / 7;
-    case 'Month':
-      int daysInMonth = DateTime.now().month + 1;
       return monthlyBudget / DateTime(DateTime.now().year, daysInMonth, 0).day;
+    case 'Month':
+      return monthlyBudget;
     case 'Year':
-      return monthlyBudget / 12;
+      return monthlyBudget * 12;
     default:
       return 0;
   }
