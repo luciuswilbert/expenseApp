@@ -1,10 +1,11 @@
+import 'package:expense_app_project/pages/transaction/description_dialog.dart';
+import 'package:expense_app_project/pages/transaction/rounded_rect_clipper.dart';
+import 'package:expense_app_project/pages/transaction/transaction_card.dart';
 import 'package:expense_app_project/utils/transaction_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:expense_app_project/pages/transaction/transaction_page.dart';
-import 'package:expense_app_project/data/transaction_data.dart';
 import 'package:intl/intl.dart'; // ✅ Import transaction data
-
 
 class BarChartWidget extends StatelessWidget {
   final List<Map<String, dynamic>> data;
@@ -21,17 +22,26 @@ class BarChartWidget extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(1),
           child: SizedBox(
-            width: data.length * barWidthFactor, // Dynamic width based on number of bars
+            width:
+                (data.length * barWidthFactor).toDouble() +
+                50, // Dynamic width based on number of bars
             child: BarChart(
               BarChartData(
+                maxY:
+                    data
+                        .map((e) => e['total'] as double)
+                        .reduce((a, b) => a > b ? a : b) +
+                    100,
                 barTouchData: BarTouchData(
                   touchTooltipData: BarTouchTooltipData(
-                    getTooltipColor: (_) => const Color.fromARGB(255, 115, 139, 96),
+                    getTooltipColor:
+                        (_) => const Color.fromARGB(255, 115, 139, 96),
                     tooltipHorizontalAlignment: FLHorizontalAlignment.right,
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                      String month = data[group.x]['month'];
+                      String label = data[group.x]['label'];
+
                       return BarTooltipItem(
-                        '$month\n',
+                        '$label\n',
                         const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -70,7 +80,7 @@ class BarChartWidget extends StatelessWidget {
                             //axisSide: meta.axisSide, // Fixed parameter name
                             space: 16,
                             child: Text(
-                              data[index]['month'].substring(0, 3),
+                              data[index]['label']?.toString() ?? '',
                               style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -96,10 +106,18 @@ class BarChartWidget extends StatelessWidget {
                     x: i,
                     barRods: [
                       BarChartRodData(
-                        toY: data[i]['total'].toDouble() / 1100,
-                        color: data[i]['total'].toDouble() < 1100
-                            ? const Color(0xFFDDA520)
-                            : const Color.fromARGB(255, 221, 32, 32),
+                        toY: (data[i]['total'] as num).toDouble(),
+                        color:
+                            (data[i]['total'] as num).toDouble() <=
+                                    (data[i]['expected'] as num).toDouble()
+                                ? const Color(0xFFDDA520) // 🟡 within budget
+                                : const Color.fromARGB(
+                                  255,
+                                  221,
+                                  32,
+                                  32,
+                                ), // 🔴 overspending
+
                         width: 15,
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(8),
@@ -123,11 +141,6 @@ class BarChartWidget extends StatelessWidget {
   }
 }
 
-
-
-
-
-
 // Transaction List Widget
 class TransactionListWidget extends StatelessWidget {
   //final TransactionPage transactionPage; // Add this line
@@ -139,38 +152,48 @@ class TransactionListWidget extends StatelessWidget {
   String formatDateTime(DateTime dateTime) {
     return DateFormat('dd MMM @ hh:mm a').format(dateTime);
   }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        shrinkWrap: true,
-        padding: const EdgeInsets.only(top: 10),
-        itemCount: 3, // ✅ Uses transaction data
-        itemBuilder: (context, index) {
-          final transaction = transactions[index];
-          return Container(
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10), 
-            child: ClipPath(
-              clipper: RoundedRectClipper(radius: 24.0), // Match your card’s radius
-              child: TransactionCard(
-                icon: Icon(
-                  getCategoryIcon(transaction['category']), // ✅ Assign icon dynamically
-                  color: getCategoryColor(transaction['category']), // ✅ Assign color dynamically
-                ),
-                category: transaction['category'],
-                amount: transaction['amount'],
-                dateTime: formatDateTime(transaction['dateTime']),
-                //color: getBgCategoryColor(transaction['category']),
-                onTap: () => showDescriptionDialog(
-                  context,
+      shrinkWrap: true,
+      padding: const EdgeInsets.only(top: 10),
+      itemCount: transactions.length.clamp(0, 3),
+      itemBuilder: (context, index) {
+        final transaction = transactions[index];
+        return Container(
+          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          child: ClipPath(
+            clipper: RoundedRectClipper(
+              radius: 24.0,
+            ), // Match your card’s radius
+            child: TransactionCard(
+              icon: Icon(
+                getCategoryIcon(
                   transaction['category'],
-                  transaction['description'],
-                  getBgCategoryColor(transaction['category']),
-                  getCategoryColor(transaction['category']), // ✅ Fetch dynamic icon color
-                ),
+                ), // ✅ Assign icon dynamically
+                color: getCategoryColor(
+                  transaction['category'],
+                ), // ✅ Assign color dynamically
               ),
+              category: transaction['category'],
+              amount: transaction['amount'],
+              dateTime: formatDateTime(transaction['dateTime']),
+              //color: getBgCategoryColor(transaction['category']),
+              onTap:
+                  () => showDescriptionDialog(
+                    context,
+                    transaction['category'],
+                    transaction['description'],
+                    getBgCategoryColor(transaction['category']),
+                    getCategoryColor(
+                      transaction['category'],
+                    ), // ✅ Fetch dynamic icon color
+                  ),
             ),
-          );
-        },
-      );
+          ),
+        );
+      },
+    );
   }
 }
