@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "ipocket",
+  "private_key_id": "68f39a430624d2eff7b1a5ce6d352efdd3167996",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQClonryG6pEb+S7\njppfYtvwX8+pO33aYxJQymRI+vc7fjScGXYMv2MLWHXDeGlJsXCg04+z7S871zFn\n3zfSCPoUifoyanzqrp4r8YEX3Z+L5oU2podl8JV2CF59m81yKAJpGzQlzW1LhCch\nOeBPisyWph0ELC/rHgf1hcrvpni51Py2MtGT0GaLJ4juwQf1y1a2F+tMG4ojps3G\n6KIBCwb+yOs29ZOEOHJPj7u1IhpOrRwcO7xGT8O0V8azlR8JWi2XBKiD0T78msq3\nRc+QPE2QJ+GKqCQStoZtlW8h28DOggUOjVtxlgKXwk/W34CFmKdJi8pmBYKTiG5r\neXofOMJNAgMBAAECggEAG2gTJ9RkDAbnthEWggn9knyIA9yQKn6SHUQf6+N63SE4\n20trORjB7rKoabuW0FbH6BSZhpAMbL5ismlA90P8/UEHYSg1my9hhKvlTGmjaKaw\nDCbp6HgyguFHoUkSaX0tSO7zZf3jw8cOInVNJFw3FgZObs5Q73p8nqeQuK628yiC\nJSwqjvI+GIEgkwcVTTVqoDkyIzku0ZGWJGG99PvPu/tMSPk4/Wb1p4B+Scg8EzIZ\nOM2g8dHdxBKCt2HB+xlWrctApN0cQMtful+gOOB3UND2JH+3C/hhAzsjzXtGfxGL\nTtXE66tLUp5UedqYlDY8g5BI5fm8bMeVLmgvtLpCkQKBgQDp6DKTmBW5SQ5ydkho\nS6QlWf8Rcu/qXUUvXRdUj17X69v7uheBMY8vGZ0facZt4GZX/Ujd+2DaL2gZsHek\nCosjAv7THbwaDLZf9LpybwFs7fXPGM0j+ZBll9/ZcDjPpAEZZS1TSY7NLyBs17z/\nACm55S2qnMiruq5HyVERGhNulwKBgQC1R3pYul1a8dnLTPJuRVT+zQool9c/9TWG\n2pHifBzScWDjrXafz8hCBPtx127MjOo2+UxYyBTJ1uUg1U4smR+khQ6nB+T1ZM42\nsA0k1mzTkmtSPrmVNfazfnPKLq8HlcZ1nXOVrFHVC3w7AEo0Hd8X19Y6dNlxLk+r\ni0YC62oWuwKBgFvtyzrgseEBSnFH9Ysv91JKvYmBD7Ofdpp3zryIIHFiHDIh4C0B\nalHLkkoPS1JRuEdqn2HG8zitGw/FoC/TiP14pugYLp5aUq8BwulIoVnLaCk9iRpT\nciHLf8m4ZkuNHHV7o0WxijMwC2FbpMbfrIaIANumBOQhWW+TOo4rHmn/AoGAANuD\nsqO/CU0XkKSeiPL/Ae2KXMLLG9xXEno6Mm4P3Nb4dFs/smXTNqy7W8B/H6yS9wua\n1tircID5uHwJ0KAwzCBs/1FEPfzqFMwkY8Y34ZBRvaPaUOBeeF7iwVQTM9/7flbu\nUwjroixZvBW2RCTYB07YDpK67JQhgFg6To06hT0CgYA8BCjpad5rfhYeAR/2k2y/\nL97UeexFtvlzTItUc3JCVNo+CWVVS8lIrL6kcMvbM0prl9BFbBRBnEjwOJn0c51o\n+MGqq918yXGoT9JAg8ONAEIrYmUEhLGJco40glCF3wNGZrBKsB1dTu1QX0T5fRLa\nxOdKLNgW/E0a8CsmHrk5Bg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "ipocketid@ipocket.iam.gserviceaccount.com",
+  "client_id": "102513505845328970368",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/ipocketid%40ipocket.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
