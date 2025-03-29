@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:expense_app_project/widgets/curved_bottom_container.dart';
 import 'package:expense_app_project/widgets/custom_notification.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,32 +10,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  
-  double? totalBudget;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchBudget();
-  }
-
-  Future<void> fetchBudget() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final docSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.email)
-          .get();
-
-      if (docSnapshot.exists) {
-        setState(() {
-          totalBudget = (docSnapshot.data()?['budget'] ?? 0).toDouble();
-        });
-      }
-    }
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,15 +50,15 @@ class _HomePageState extends State<HomePage> {
                   left: 0,
                   right: 0,
                   child: Column(
-                    children: [
-                      const Text(
+                    children: const [
+                      Text(
                         'Total Balance',
                         style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
                       ),
-                      const SizedBox(height: 3),
+                      SizedBox(height: 3),
                       Text(
-                        totalBudget != null ? 'RM ${totalBudget!.toStringAsFixed(2)}' : 'Loading...',
-                        style: const TextStyle(fontSize: 25, color: Colors.black),
+                        'RM 2,440.00',
+                        style: TextStyle(fontSize: 25, color: Colors.black),
                       ),
                     ],
                   ),
