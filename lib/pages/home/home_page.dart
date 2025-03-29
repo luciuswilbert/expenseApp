@@ -96,7 +96,9 @@ class _HomePageState extends State<HomePage> {
                   _buildFeatureCard(Icons.receipt_long, "OCR", () {
                     Navigator.pushNamed(context, '/ocr');
                   }),
-                  _buildFeatureCard(Icons.chat, "Chatbot", () {}),
+                  _buildFeatureCard(Icons.chat, "Chatbot", () {
+                    Navigator.pushNamed(context, '/chatbot');
+                  }),
                   _buildFeatureCard(Icons.mic, "Voice Assistant", () {}),
                   _buildFeatureCard(Icons.summarize, "AI Summary", () {}),
                 ],

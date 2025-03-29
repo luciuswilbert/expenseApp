@@ -1,4 +1,5 @@
 import 'package:expense_app_project/pages/add_expense/ocr_add_expense.dart';
+import 'package:expense_app_project/pages/home/chatbot_page.dart';
 import 'package:expense_app_project/pages/login_register/google_profile.dart';
 import 'package:expense_app_project/pages/login_register/login_register_screen.dart';
 import 'package:expense_app_project/pages/login_register/login_screen.dart';
@@ -18,9 +19,14 @@ import 'package:expense_app_project/pages/add_expense/add_expense.dart';
 import 'package:expense_app_project/pages/transaction/transaction_page.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Loading environment variables from .env file
+  await dotenv.load();
+
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -63,6 +69,7 @@ class MyApp extends StatelessWidget {
           "/sign-up": (context) => SignUpScreen(),
           "/profile": (context) => ProfileScreen(),
           "/ocr": (context) => OCRAddExpensePage(),
+          "/chatbot": (context) => const ChatbotPage(),
         },
       ),
     );
