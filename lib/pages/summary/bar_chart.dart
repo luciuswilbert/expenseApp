@@ -4,7 +4,6 @@ import 'package:expense_app_project/pages/transaction/transaction_card.dart';
 import 'package:expense_app_project/utils/transaction_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:expense_app_project/pages/transaction/transaction_page.dart';
 import 'package:intl/intl.dart'; // ✅ Import transaction data
 
 class BarChartWidget extends StatelessWidget {
