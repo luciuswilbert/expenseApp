@@ -103,52 +103,73 @@ class _OCRAddExpensePageState extends State<OCRAddExpensePage> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('API key not found')));
       return;
     }*/
+    
+    /*final schema = Schema.object(properties: {
+      'category': Schema.enumString(
+        enumValues: [
+          'Shopping',
+          'Subscription',
+          'Food',
+          'Healthcare',
+          'Groceries',
+          'Transportation',
+          'Utilities',
+          'Housing',
+          'Miscellaneous'
+        ],
+        description: 'Expense category chosen from predefined options.',
+        nullable: true,
+      ),
+      'amount': Schema.number(description: 'Expense Total Amount', nullable: true),
+      'description': Schema.string(description: 'Short description of the expense,no more than 10 words', nullable: true),
+    });*/
 
     final model = GenerativeModel(
-      model: 'gemini-2.0-flash',
+      model: 'gemini-1.5-flash', // Ensure this is a valid model name
       apiKey: apiKey,
       generationConfig: GenerationConfig(
         temperature: 1,
         topK: 40,
         topP: 0.95,
-        maxOutputTokens: 8192,
+        maxOutputTokens: 50,
         responseMimeType: 'application/json',
+        //responseSchema: schema,
       ),
       systemInstruction: Content.system("""
-Extract the expense details from the following receipt image.
+        Extract the expense details from the following receipt image.
 
-Return the result in *ONE valid JSON format* with the following structure:
-{
-  "expenseCategory": "<category>",
-  "totalAmount": <amount>,
-  "description": "<short description>"
-}
+        Return the result in *ONE valid JSON format* with the following structure:
+        {
+          "category": "<category>",
+          "amount": <amount>,
+          "description": "<short description>"
+        }
 
-### *Instructions:*
-- *expenseCategory*: Identify the most suitable category from the following:
-  - "Groceries"
-  - "Subscription"
-  - "Food"
-  - "Shopping"
-  - "Healthcare"
-  - "Transportation"
-  - "Utilities"
-  - "Housing"
-  - If the category does not match any of the above, classify it as *"Miscellaneous"*.
+        ### *Instructions:*
+        - *expenseCategory*: Identify the most suitable category from the following:
+          - "Groceries"
+          - "Subscription"
+          - "Food"
+          - "Shopping"
+          - "Healthcare"
+          - "Transportation"
+          - "Utilities"
+          - "Housing"
+          - If the category does not match any of the above, classify it as *"Miscellaneous"*.
 
-- *totalAmount: Extract the **final total amount paid* from the receipt. Look for keywords such as:
-  - "Total"
-  - "Grand Total"
-  - "Amount Due"
-  - "Balance Due"
-  - "Subtotal" (only if no total amount is found)
-  If multiple amounts are listed, *prioritize the one associated with "Total" or "Grand Total"* rather than just the last number.
+        - *totalAmount: Extract the **final total amount paid* from the receipt. Look for keywords such as:
+          - "Total"
+          - "Grand Total"
+          - "Amount Due"
+          - "Balance Due"
+          - "Subtotal" (only if no total amount is found)
+          If multiple amounts are listed, *prioritize the one associated with "Total" or "Grand Total"* rather than just the last number.
 
-- *description*: Provide a concise description summarizing the transaction purchased product based on the extracted text.
+        - *description*: Provide a concise description summarizing the transaction purchased product based on the extracted text.For example, where, which company/restaurant. no more than 10 words
 
-Ensure that the JSON output is correctly formatted and does not contain extra explanations.
-"""
-),
+        Ensure that the JSON output is correctly formatted and does not contain extra explanations.
+        """
+      ),
     );
 
     final chat = model.startChat();
@@ -167,6 +188,7 @@ Ensure that the JSON output is correctly formatted and does not contain extra ex
       // Step 2: Send to Gemini chat
       final response = await chat.sendMessage(content);
       setState(() {
+        print("response: ${response.text}");
         _geminiResponse = response.text;
       });
       return response.text;
@@ -180,6 +202,7 @@ Ensure that the JSON output is correctly formatted and does not contain extra ex
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xffE8E8E8),
       appBar: AppBar(
         title: const Text(
           'OCR',
@@ -252,20 +275,18 @@ Ensure that the JSON output is correctly formatted and does not contain extra ex
                   // TODO: Handle OCR submission logic here
                   _geminiResponse=  await _sendImageToGemini();
                   Map<String, dynamic> jsonResponse = jsonDecode( _geminiResponse!);
-                  
+                  print('json: $jsonResponse');
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => AddExpensePage(
-                        expenseCategory: jsonResponse['expenseCategory'],
-                        totalAmount: jsonResponse['totalAmount'],
+                        expenseCategory: jsonResponse['category'],
+                        totalAmount:  double.parse(jsonResponse['amount']),
                         description: jsonResponse['description'],
                       ),
                     ),
                   );
-
-                  // print('GEMINI RESPONSE:');
-                  // print(_geminiResponse);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xffDAA520), // ✅ Goldenrod color

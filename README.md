@@ -1,6 +1,5 @@
 # Google Sign In
-1. Paste this to your cmd "keytool -list -v \
--alias androiddebugkey -keystore %USERPROFILE%\.android\debug.keystore" in cmd 
+1. Paste this to your cmd "keytool -list -v -alias androiddebugkey -keystore "%USERPROFILE%\.android\debug.keystore" -storepass android -keypass android"
 2. Type password: "android"
 3. Receive SHA1 and SHA256
 4. Add Fingerprint in firebase

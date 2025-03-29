@@ -7,12 +7,10 @@ import 'package:expense_app_project/pages/login_register/saving_profile_screen.d
 import 'package:expense_app_project/pages/login_register/sign_up_screen.dart';
 import 'package:expense_app_project/pages/summary/summary.dart';
 import 'package:expense_app_project/providers/google.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:expense_app_project/providers/firebase_options.dart';
 import 'package:expense_app_project/pages/home/home_page.dart';
-import 'package:expense_app_project/pages/Onboard/onboard.dart';
 import 'package:expense_app_project/widgets/bottom_nav_bar.dart';
 import 'package:expense_app_project/pages/profile/profile_page.dart';
 import 'package:expense_app_project/pages/Onboard/splash_screen.dart';

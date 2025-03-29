@@ -1,5 +1,6 @@
 import 'package:expense_app_project/pages/add_expense/add_expense.dart';
 import 'package:expense_app_project/pages/add_expense/ocr_add_expense.dart';
+import 'package:expense_app_project/pages/add_expense/voice_assistant_add_expense.dart';
 import 'package:flutter/material.dart';
 
 class CustomThreeDotMenu extends StatelessWidget {
@@ -38,13 +39,13 @@ class CustomThreeDotMenu extends StatelessWidget {
           );
         } else if (value == "AI (Voice Assistant)" &&
             currentRoute != '/ai_voice_assistant') {
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => VoiceAssistantAddExpensePage(),
-          //     settings: const RouteSettings(name: '/ai_voice_assistant'),
-          //   ),
-          // );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RecorderScreen(),
+              settings: const RouteSettings(name: '/ai_voice_assistant'),
+            ),
+          );
         }
       },
       itemBuilder:
