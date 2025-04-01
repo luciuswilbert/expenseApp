@@ -318,7 +318,6 @@ class _ChatbotPageState extends State<ChatbotPage> {
                                 messages.removeWhere(
                                   (m) => m['content']!.startsWith('Typing'),
                                 );
-                                // messages.removeLast();
                                 messages.add({'role': 'ai', 'content': reply});
                               });
                             }
