@@ -5,7 +5,7 @@ import 'package:expense_app_project/widgets/custom_password_field.dart';
 import 'package:expense_app_project/widgets/custom_text_field.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:expense_app_project/providers/auth.dart';
+import 'package:expense_app_project/providers/auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpScreen extends StatefulWidget {

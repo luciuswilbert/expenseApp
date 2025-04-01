@@ -112,7 +112,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
 
     final prompt =
         isFirstMessage
-            ? '''You are a helpful AI financial assistant. Here is the user's transaction data in JSON format:$userDataJson
+            ? '''You are a helpful AI financial assistant. Cautions-(Do not add header, bold, or any symbol, just make it plain text) Here is the user's transaction data in JSON format:$userDataJson
         Now here is their first question:$message
         '''
             : message;
@@ -318,7 +318,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                                 messages.removeWhere(
                                   (m) => m['content']!.startsWith('Typing'),
                                 );
-                                messages.removeLast();
+                                // messages.removeLast();
                                 messages.add({'role': 'ai', 'content': reply});
                               });
                             }

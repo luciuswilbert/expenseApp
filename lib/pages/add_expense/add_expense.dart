@@ -1,7 +1,5 @@
 import 'dart:math';
-
 import 'package:expense_app_project/main.dart';
-import 'package:expense_app_project/pages/home/home_page.dart';
 import 'package:expense_app_project/utils/transaction_helpers.dart';
 import 'package:expense_app_project/widgets/custom_three_dot_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';

@@ -14,7 +14,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView( // ✅ Ensures full page is scrollable
+      body: SingleChildScrollView(
+        // ✅ Ensures full page is scrollable
         child: Column(
           children: [
             Stack(
@@ -34,11 +35,19 @@ class _HomePageState extends State<HomePage> {
                     children: const [
                       Text(
                         'Good afternoon,',
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
                       ),
                       Text(
                         'Lucius Wilbert Tjoa',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ],
                   ),
@@ -53,7 +62,11 @@ class _HomePageState extends State<HomePage> {
                     children: const [
                       Text(
                         'Total Balance',
-                        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                       SizedBox(height: 3),
                       Text(
@@ -67,7 +80,6 @@ class _HomePageState extends State<HomePage> {
             ),
 
             const SizedBox(height: 20), // ✅ Leaves space below the stack
-
             /// ✅ Features Title
             Align(
               alignment: Alignment.centerLeft,
@@ -84,11 +96,10 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-
             /// ✅ Feature Cards (OCR, Chatbot, etc.)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              
+
               child: Wrap(
                 spacing: 16,
                 runSpacing: 16,
@@ -101,6 +112,10 @@ class _HomePageState extends State<HomePage> {
                   }),
                   _buildFeatureCard(Icons.mic, "Voice Assistant", () {}),
                   _buildFeatureCard(Icons.summarize, "AI Summary", () {}),
+
+                  _buildFeatureCard(Icons.home, "iHome", () {
+                    Navigator.pushNamed(context, "/iHome");
+                  }),
                 ],
               ),
             ),

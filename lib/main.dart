@@ -1,5 +1,6 @@
 import 'package:expense_app_project/pages/add_expense/ocr_add_expense.dart';
 import 'package:expense_app_project/pages/home/chatbot_page.dart';
+import 'package:expense_app_project/pages/home/ihome_page.dart';
 import 'package:expense_app_project/pages/login_register/google_profile.dart';
 import 'package:expense_app_project/pages/login_register/login_register_screen.dart';
 import 'package:expense_app_project/pages/login_register/login_screen.dart';
@@ -7,7 +8,7 @@ import 'package:expense_app_project/pages/login_register/profile_success_screen.
 import 'package:expense_app_project/pages/login_register/saving_profile_screen.dart';
 import 'package:expense_app_project/pages/login_register/sign_up_screen.dart';
 import 'package:expense_app_project/pages/summary/summary.dart';
-import 'package:expense_app_project/providers/google.dart';
+import 'package:expense_app_project/providers/google_auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:expense_app_project/providers/firebase_options.dart';
@@ -70,6 +71,7 @@ class MyApp extends StatelessWidget {
           "/profile": (context) => ProfileScreen(),
           "/ocr": (context) => OCRAddExpensePage(),
           "/chatbot": (context) => const ChatbotPage(),
+          "/iHome": (context) => IHomePage(),
         },
       ),
     );

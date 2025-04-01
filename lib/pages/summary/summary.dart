@@ -3,7 +3,6 @@ import 'package:expense_app_project/pages/summary/bar_chart.dart';
 import 'package:expense_app_project/pages/summary/pie_chart.dart';
 import 'package:expense_app_project/pages/summary/summary_logic.dart';
 import 'package:expense_app_project/utils/transaction_helpers.dart';
-import 'package:expense_app_project/widgets/custom_toggle.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
