@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_app_project/widgets/curved_bottom_container.dart';
 import 'package:expense_app_project/widgets/custom_notification.dart';
@@ -10,6 +12,63 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Map<String, dynamic>? userProfile;
+  bool isLoading = true;
+  String _selectedCurrency = "USD";
+
+  final TextEditingController _expenseBudgetController = TextEditingController(
+    text: "1000",
+  );
+
+  void _loadUserSettings() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.email)
+          .get();
+      if (doc.exists) {
+        final data = doc.data();
+        setState(() {
+          
+          _selectedCurrency = userProfile!['currency'];
+
+          // Convert the budget (if it's a number) to string before setting it
+          var budget = data?['budget'];
+          _expenseBudgetController.text = (budget != null) ? budget.toString() : _expenseBudgetController.text;
+          
+     
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData(); // Initial fetch
+    _loadUserSettings(); // Load user settings
+  }
+
+  // ✅ Reusable method to fetch user data
+  void _fetchUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.email)
+          .get();
+
+      if (doc.exists) {
+        setState(() {
+          userProfile = doc.data();
+          isLoading = false;
+        });
+      }
+    }
+  }
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,14 +90,15 @@ class _HomePageState extends State<HomePage> {
                   left: 16,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         'Good afternoon,',
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
                       ),
+                      
                       Text(
-                        'Lucius Wilbert Tjoa',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                        userProfile?['fullName'] ?? '',
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                       ),
                     ],
                   ),
@@ -50,15 +110,15 @@ class _HomePageState extends State<HomePage> {
                   left: 0,
                   right: 0,
                   child: Column(
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         'Total Balance',
                         style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
                       ),
-                      SizedBox(height: 3),
+                      const SizedBox(height: 3),
                       Text(
-                        'RM 2,440.00',
-                        style: TextStyle(fontSize: 25, color: Colors.black),
+                        _selectedCurrency + " " + (userProfile?['budget']?.toString() ?? ''),
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                       ),
                     ],
                   ),
