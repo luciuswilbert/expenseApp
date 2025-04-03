@@ -1,13 +1,12 @@
 import 'dart:math';
-
 import 'package:expense_app_project/main.dart';
-import 'package:expense_app_project/pages/home/home_page.dart';
 import 'package:expense_app_project/utils/transaction_helpers.dart';
 import 'package:expense_app_project/widgets/custom_three_dot_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expense_app_project/pages/Notification/notification_page.dart';
 
 class AddExpensePage extends StatefulWidget {
   final String? expenseCategory;
@@ -32,6 +31,77 @@ class _AddExpensePageState extends State<AddExpensePage> {
   final TextEditingController _descriptionController = TextEditingController();
   DateTime? _selectedDate;
   String? _selectedCategory;
+  final user = FirebaseAuth.instance.currentUser;
+
+  double totalSpending = 0.0;
+  double userBudget = 0.0;
+  bool isLoading = true;
+
+  // Fetch user's budget and calculate total spending for the current month
+  Future<void> _fetchUserBudgetAndTransactions(String? email) async {
+    if (user != null) {
+      try {
+        // Fetch user profile to get the budget
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user!.email).get();
+        if (userDoc.exists) {
+          var userProfile = userDoc.data() as Map<String, dynamic>;
+          userBudget = double.tryParse(userProfile['budget'].toString()) ?? 0.0;  // Get the budget
+          
+          // Get current month range (start and end date)
+          DateTime now = DateTime.now();
+          DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
+          DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+          
+          // Fetch transactions for the current month
+          QuerySnapshot transactionsSnapshot = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user!.email)
+              .collection('transactions')
+              .where('dateTime', isGreaterThanOrEqualTo: firstDayOfMonth)
+              .where('dateTime', isLessThanOrEqualTo: lastDayOfMonth)
+              .get();
+
+          // Calculate total spending for the current month
+          double total = 0.0;
+          transactionsSnapshot.docs.forEach((doc) {
+            var data = doc.data() as Map<String, dynamic>;
+            total += data['amount'] ?? 0.0;
+          });
+
+          setState(() {
+            totalSpending = total;
+            isLoading = false;
+          });
+          print("Total Spending: $totalSpending, User Budget: $userBudget");
+
+          // Compare the total spending with the user's budget
+          if (totalSpending > userBudget) {
+            _sendNotification();
+          }
+        }
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+        print('Error fetching user profile or transactions: $e');
+      }
+    }
+  }
+
+
+  // Trigger a notification if spending exceeds the budget
+  void _sendNotification() {
+    print("Sending notification...");
+
+    FirebaseFirestore.instance.collection('users')
+        .doc(user!.email)
+        .collection('notifications')
+        .add({
+          'title': 'Budget Exceeded',
+          'message': 'Your total spending for the month exceeds the budget!',
+          'time': FieldValue.serverTimestamp(),
+        });
+  }
 
   void addOrUpdateTransaction(final user, Map<String, dynamic> transactionData, {String? transactionId}) async {
     bool success = false;
@@ -191,6 +261,9 @@ class _AddExpensePageState extends State<AddExpensePage> {
                     final user = FirebaseAuth.instance.currentUser;
                     addOrUpdateTransaction(user, transactionData, transactionId: widget.transactionId); 
 
+                    _fetchUserBudgetAndTransactions(user?.email); // Add this line here
+
+
                     // ✅ Save notification under user's 'notifications' collection (same level as transactions)
                     await FirebaseFirestore.instance
                         .collection('users')
@@ -204,7 +277,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
 
                     print("Expense added & notification stored.");
 
-
+                    
 
                     //showExpenseAddedDialog(context);
                   },

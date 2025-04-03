@@ -308,7 +308,11 @@ class _SettingsPageState extends State<SettingsPage> {
               userProfile = doc.data();
               _selectedCurrency = userProfile!['currency'];
               _selectedLanguage = userProfile!['language'];
-              _expenseBudgetController.text = userProfile!['budget'];
+              
+              // Handle the budget: Convert it to a string if it's a number
+              var budget = userProfile!['budget'];
+              _expenseBudgetController.text = (budget != null) ? budget.toString() : '';
+              
               isLoading = false;
             });
           }
@@ -317,21 +321,24 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
+
   void _loadUserSettings() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      final doc =
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.email)
-              .get();
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.email)
+          .get();
       if (doc.exists) {
         final data = doc.data();
         setState(() {
           _selectedCurrency = data?['currency'] ?? _selectedCurrency;
           _selectedLanguage = data?['language'] ?? _selectedLanguage;
-          _expenseBudgetController.text =
-              data?['budget'] ?? _expenseBudgetController.text;
+          
+          // Convert the budget (if it's a number) to string before setting it
+          var budget = data?['budget'];
+          _expenseBudgetController.text = (budget != null) ? budget.toString() : _expenseBudgetController.text;
+          
           _isDarkMode = data?['darkMode'] ?? false;
           _notificationsEnabled = data?['notifications'] ?? true;
           _securityEnabled = data?['security'] ?? false;
@@ -339,6 +346,7 @@ class _SettingsPageState extends State<SettingsPage> {
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
