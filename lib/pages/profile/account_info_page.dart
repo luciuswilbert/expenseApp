@@ -92,9 +92,15 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const CircleAvatar(
+            CircleAvatar(
               radius: 50,
-              backgroundImage: AssetImage('assets/profile_placeholder.png'),
+              backgroundColor: const Color(0xffDAA520),
+              backgroundImage: (userProfile?['profileImageUrl'] != null && userProfile!['profileImageUrl'].isNotEmpty)
+                  ? NetworkImage(userProfile!['profileImageUrl'])
+                  : null,
+              child: (userProfile?['profileImageUrl'] == null || userProfile!['profileImageUrl'].isEmpty)
+                  ? const Icon(Icons.person, size: 40, color: Colors.white)
+                  : null,
             ),
             const SizedBox(height: 16),
             _buildInfoRow("Full Name", userProfile!['fullName'] ?? ''),
