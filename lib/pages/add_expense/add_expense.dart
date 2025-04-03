@@ -174,7 +174,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
               const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_selectedCategory == null || _amountController.text.isEmpty || _selectedDate == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Please fill all required fields")),
@@ -189,7 +189,23 @@ class _AddExpensePageState extends State<AddExpensePage> {
                       'color': getCategoryColor(_selectedCategory!).value,
                     };
                     final user = FirebaseAuth.instance.currentUser;
-                    addOrUpdateTransaction(user, transactionData, transactionId: widget.transactionId);    
+                    addOrUpdateTransaction(user, transactionData, transactionId: widget.transactionId); 
+
+                    // ✅ Save notification under user's 'notifications' collection (same level as transactions)
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user?.email)
+                        .collection('notifications') // Same level as transactions
+                        .add({
+                          'title': "Expense Added",
+                          'message': "You added \$${transactionData['amount']} for ${transactionData['category']}.",
+                          'time': Timestamp.now(), // Stores the current time
+                        });
+
+                    print("Expense added & notification stored.");
+
+
+
                     //showExpenseAddedDialog(context);
                   },
                   style: ElevatedButton.styleFrom(

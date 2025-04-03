@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import 'package:expense_app_project/widgets/notification_item.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -9,28 +12,7 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  final List<Map<String, String>> _notifications = [
-    {
-      "title": "Payment Received",
-      "message": "You received \$100 from John",
-      "time": "10 min ago",
-    },
-    {
-      "title": "Reminder",
-      "message": "Your bill is due tomorrow",
-      "time": "1 hr ago",
-    },
-    {
-      "title": "Discount Offer",
-      "message": "Get 20% off on premium!",
-      "time": "3 hrs ago",
-    },
-    {
-      "title": "New Update",
-      "message": "Version 2.0 is now available!",
-      "time": "1 day ago",
-    },
-  ];
+  final user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -41,18 +23,56 @@ class _NotificationPageState extends State<NotificationPage> {
           "Notifications",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: _notifications.length,
-        itemBuilder: (context, index) {
-          return NotificationItem(
-            title: _notifications[index]["title"]!,
-            message: _notifications[index]["message"]!,
-            time: _notifications[index]["time"]!,
-          );
-        },
-      ),
+      body: user == null
+          ? const Center(child: Text("User not logged in"))
+          : StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user!.email)
+                  .collection('notifications')
+                  .orderBy('time', descending: true) // ✅ Latest first
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text("No notifications yet."));
+                }
+
+                // ✅ Convert Firestore data to a list of notifications
+                var notifications = snapshot.data!.docs.map((doc) {
+                  var data = doc.data() as Map<String, dynamic>;
+                  return {
+                    "title": data["title"] ?? "No Title",
+                    "message": data["message"] ?? "No Message",
+                    "time": formatTimestamp(data["time"]),
+                  };
+                }).toList();
+
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: notifications.length,
+                  itemBuilder: (context, index) {
+                    return NotificationItem(
+                      title: notifications[index]["title"]!,
+                      message: notifications[index]["message"]!,
+                      time: notifications[index]["time"]!,
+                    );
+                  },
+                );
+              },
+            ),
     );
+  }
+
+  // ✅ Convert Firestore Timestamp to readable format
+  String formatTimestamp(Timestamp? timestamp) {
+    if (timestamp == null) return "Unknown Time";
+    DateTime dateTime = timestamp.toDate();
+    return DateFormat("dd MMM, hh:mm a").format(dateTime); // Example: "03 Apr, 03:00 PM"
   }
 }
