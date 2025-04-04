@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:expense_app_project/pages/Notification/notification_page.dart';
+import 'package:iPocket/pages/Notification/notification_page.dart';
 
 class NotificationButton extends StatelessWidget {
   const NotificationButton({Key? key}) : super(key: key);

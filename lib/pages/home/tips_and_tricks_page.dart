@@ -1,10 +1,9 @@
-import 'package:expense_app_project/pages/home/tips_and_tricks_content/article_five.dart';
-import 'package:expense_app_project/pages/home/tips_and_tricks_content/article_four.dart';
-import 'package:expense_app_project/pages/home/tips_and_tricks_content/article_one.dart';
-import 'package:expense_app_project/pages/home/tips_and_tricks_content/article_three.dart';
-import 'package:expense_app_project/pages/home/tips_and_tricks_content/article_two.dart';
-
 import 'package:flutter/material.dart';
+import 'package:iPocket/pages/home/tips_and_tricks_content/article_five.dart';
+import 'package:iPocket/pages/home/tips_and_tricks_content/article_four.dart' show ArticleFour;
+import 'package:iPocket/pages/home/tips_and_tricks_content/article_one.dart';
+import 'package:iPocket/pages/home/tips_and_tricks_content/article_three.dart';
+import 'package:iPocket/pages/home/tips_and_tricks_content/article_two.dart';
 
 class TipsAndTricksPage extends StatelessWidget {
   const TipsAndTricksPage({Key? key}) : super(key: key);

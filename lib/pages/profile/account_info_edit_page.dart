@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iPocket/widgets/custom_date_picker.dart';
+import 'package:iPocket/widgets/custom_password_field.dart';
+import 'package:iPocket/widgets/custom_text_field.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
-import 'package:expense_app_project/widgets/custom_text_field.dart';
-import 'package:expense_app_project/widgets/custom_password_field.dart';
-import 'package:expense_app_project/widgets/custom_date_picker.dart';
-import 'package:expense_app_project/widgets/custom_back_button.dart';
 
 class AccountInfoEditPage extends StatefulWidget {
   final Map<String, dynamic> initialData;

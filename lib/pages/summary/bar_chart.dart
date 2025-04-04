@@ -1,9 +1,9 @@
-import 'package:expense_app_project/pages/transaction/description_dialog.dart';
-import 'package:expense_app_project/pages/transaction/rounded_rect_clipper.dart';
-import 'package:expense_app_project/pages/transaction/transaction_card.dart';
-import 'package:expense_app_project/utils/transaction_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:iPocket/pages/transaction/description_dialog.dart';
+import 'package:iPocket/pages/transaction/rounded_rect_clipper.dart';
+import 'package:iPocket/pages/transaction/transaction_card.dart';
+import 'package:iPocket/utils/transaction_helpers.dart';
 import 'package:intl/intl.dart'; // ✅ Import transaction data
 
 class BarChartWidget extends StatelessWidget {

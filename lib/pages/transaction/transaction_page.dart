@@ -2,12 +2,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iPocket/pages/add_expense/add_expense.dart';
+import 'package:iPocket/utils/transaction_helpers.dart';
+import 'package:iPocket/widgets/filter_dialog_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
-import 'package:expense_app_project/pages/add_expense/add_expense.dart';
-import 'package:expense_app_project/utils/transaction_helpers.dart';
-import 'package:expense_app_project/widgets/filter_dialog_widget.dart';
 import 'transaction_card.dart';
 import 'rounded_rect_clipper.dart';
 import 'description_dialog.dart';

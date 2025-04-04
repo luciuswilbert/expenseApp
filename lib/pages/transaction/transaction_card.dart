@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:expense_app_project/utils/transaction_helpers.dart';
+import 'package:iPocket/utils/transaction_helpers.dart';
 
 class TransactionCard extends StatelessWidget {
   final Icon icon;

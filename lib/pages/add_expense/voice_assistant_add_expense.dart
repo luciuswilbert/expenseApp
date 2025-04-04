@@ -1,11 +1,10 @@
 import 'dart:convert';
-
-import 'package:expense_app_project/pages/add_expense/add_expense.dart';
-import 'package:expense_app_project/widgets/custom_three_dot_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:google_speech/google_speech.dart';
+import 'package:iPocket/pages/add_expense/add_expense.dart';
+import 'package:iPocket/widgets/custom_three_dot_menu.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';

@@ -1,12 +1,12 @@
-import 'package:expense_app_project/pages/login_register/auth_theme.dart';
-import 'package:expense_app_project/pages/login_register/profile_setup_page.dart';
-import 'package:expense_app_project/pages/login_register/responsive_scroll.dart';
-import 'package:expense_app_project/widgets/custom_password_field.dart';
-import 'package:expense_app_project/widgets/custom_text_field.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:expense_app_project/providers/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:iPocket/pages/login_register/auth_theme.dart';
+import 'package:iPocket/pages/login_register/profile_setup_page.dart';
+import 'package:iPocket/pages/login_register/responsive_scroll.dart';
+import 'package:iPocket/providers/auth.dart';
+import 'package:iPocket/widgets/custom_password_field.dart';
+import 'package:iPocket/widgets/custom_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});

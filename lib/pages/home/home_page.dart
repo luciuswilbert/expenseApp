@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:expense_app_project/pages/home/tips_and_tricks_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:expense_app_project/widgets/curved_bottom_container.dart';
-import 'package:expense_app_project/widgets/custom_notification.dart';
+import 'package:iPocket/pages/home/tips_and_tricks_page.dart';
+import 'package:iPocket/widgets/curved_bottom_container.dart';
+import 'package:iPocket/widgets/custom_notification.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

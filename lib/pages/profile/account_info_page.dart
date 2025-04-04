@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'account_info_edit_page.dart';
-import 'package:expense_app_project/widgets/custom_back_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

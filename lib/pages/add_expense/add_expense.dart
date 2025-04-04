@@ -1,12 +1,11 @@
 import 'dart:math';
-import 'package:expense_app_project/main.dart';
-import 'package:expense_app_project/utils/transaction_helpers.dart';
-import 'package:expense_app_project/widgets/custom_three_dot_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iPocket/main.dart';
+import 'package:iPocket/utils/transaction_helpers.dart';
+import 'package:iPocket/widgets/custom_three_dot_menu.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:expense_app_project/pages/Notification/notification_page.dart';
 
 class AddExpensePage extends StatefulWidget {
   final String? expenseCategory;

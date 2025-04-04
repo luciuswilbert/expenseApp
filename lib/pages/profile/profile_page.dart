@@ -1,10 +1,10 @@
-import 'package:expense_app_project/pages/Onboard/onboard.dart';
 import 'package:flutter/material.dart';
+import 'package:iPocket/pages/Onboard/onboard.dart';
+import 'package:iPocket/pages/profile/settings_page.dart';
+import 'package:iPocket/widgets/curved_bottom_container.dart';
+import 'package:iPocket/widgets/custom_notification.dart';
+import 'package:iPocket/widgets/logout_dialog.dart';
 import 'account_info_page.dart';
-import 'package:expense_app_project/widgets/curved_bottom_container.dart';
-import 'package:expense_app_project/widgets/logout_dialog.dart';
-import 'package:expense_app_project/pages/profile/settings_page.dart';
-import 'package:expense_app_project/widgets/custom_notification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
