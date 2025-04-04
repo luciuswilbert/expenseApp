@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expense_app_project/pages/home/tips_and_tricks_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_app_project/widgets/curved_bottom_container.dart';
@@ -173,8 +174,15 @@ class _HomePageState extends State<HomePage> {
                   _buildFeatureCard(Icons.chat, "Chatbot", () {
                     Navigator.pushNamed(context, '/chatbot');
                   }),
-                  _buildFeatureCard(Icons.mic, "Voice Assistant", () {}),
-                  _buildFeatureCard(Icons.summarize, "AI Summary", () {}),
+                  _buildFeatureCard(Icons.mic, "Voice Assistant", () {
+                    Navigator.pushNamed(context, '/voice-assistant');
+                  }),
+                  _buildFeatureCard(Icons.summarize, "Tips & Tricks", () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const TipsAndTricksPage()),
+                    );
+                  }),
                 ],
               ),
             ),

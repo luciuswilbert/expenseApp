@@ -1,5 +1,7 @@
 import 'package:expense_app_project/pages/add_expense/ocr_add_expense.dart';
+import 'package:expense_app_project/pages/add_expense/voice_assistant_add_expense.dart';
 import 'package:expense_app_project/pages/home/chatbot_page.dart';
+import 'package:expense_app_project/pages/home/tips_and_tricks_page.dart';
 import 'package:expense_app_project/pages/login_register/google_profile.dart';
 import 'package:expense_app_project/pages/login_register/login_register_screen.dart';
 import 'package:expense_app_project/pages/login_register/login_screen.dart';
@@ -70,6 +72,8 @@ class MyApp extends StatelessWidget {
           "/profile": (context) => ProfileScreen(),
           "/ocr": (context) => OCRAddExpensePage(),
           "/chatbot": (context) => const ChatbotPage(),
+          '/tips_and_tricks': (context) => const TipsAndTricksPage(),
+          '/voice-assistant': (context) => const RecorderScreen(),
         },
       ),
     );
