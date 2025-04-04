@@ -20,6 +20,19 @@ class _HomePageState extends State<HomePage> {
     text: "1000",
   );
 
+  String _getGreeting() {
+    final hour = DateTime.now().hour; // Get the current hour (0-23)
+    if (hour < 10) {
+      return 'Good Morning,'; 
+    } else if (hour < 15) {
+      return 'Good Afternoon,';
+    } else if (hour < 19) {
+      return 'Good Evening,';
+    } else {
+      return 'Good Night,';
+    }
+  }
+
   void _loadUserSettings() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -71,6 +84,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final String greeting = _getGreeting();
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView( // ✅ Ensures full page is scrollable
@@ -91,8 +105,8 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Good afternoon,',
+                      Text(
+                        greeting,
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
                       ),
                       
