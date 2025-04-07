@@ -1,6 +1,3 @@
-"# Expense App" 
+# iPocket Expense App
 
-# OCR
-- Download external library to run the program
-1) pip install google-genai
-2) pip install pillow
+This app tracks expenses with OCR, voice input, and AI summary.
