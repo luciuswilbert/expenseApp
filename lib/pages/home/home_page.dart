@@ -45,10 +45,10 @@ class _HomePageState extends State<HomePage> {
         final data = doc.data();
         setState(() {
           
-          _selectedCurrency = userProfile!['currency'];
+          _selectedCurrency = data!['currency'];
 
           // Convert the budget (if it's a number) to string before setting it
-          var budget = data?['budget'];
+          var budget = data['budget'];
           _expenseBudgetController.text = (budget != null) ? budget.toString() : _expenseBudgetController.text;
           
      
@@ -182,6 +182,9 @@ class _HomePageState extends State<HomePage> {
                       context,
                       MaterialPageRoute(builder: (context) => const TipsAndTricksPage()),
                     );
+                  }),
+                  _buildFeatureCard(Icons.star_border, "Quests", () {
+                    Navigator.pushNamed(context, '/quests');
                   }),
                 ],
               ),

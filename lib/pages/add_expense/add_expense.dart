@@ -176,7 +176,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
       context: context,
       initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime(2000),
-      lastDate: DateTime(2050),
+      lastDate: DateTime.now(),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -275,9 +275,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         });
 
                     print("Expense added & notification stored.");
-
-                    
-
                     //showExpenseAddedDialog(context);
                   },
                   style: ElevatedButton.styleFrom(

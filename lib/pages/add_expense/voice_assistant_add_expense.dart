@@ -137,7 +137,7 @@ class _RecorderScreenState extends State<RecorderScreen> {
         apiKey: 'AIzaSyDReqVkKB-d5f4U9gr06wdGbsyXrt9Q8eQ',
         generationConfig: GenerationConfig(
           responseMimeType: 'application/json',
-          responseSchema: schema,
+          //responseSchema: schema,
         ),
       );
 
@@ -227,9 +227,9 @@ class _RecorderScreenState extends State<RecorderScreen> {
           ),
           const SizedBox(height: 12),
           const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 30),
             child: Text(
-              'Speak clearly to record your expense',
+              'Speak clearly to record your expense (E.g. I bought a pizza for 30 ringit)',
               style: TextStyle(color: Colors.red, fontSize: 14),
               textAlign: TextAlign.center,
             ),

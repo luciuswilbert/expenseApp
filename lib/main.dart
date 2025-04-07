@@ -15,6 +15,7 @@ import 'package:iPocket/pages/login_register/profile_success_screen.dart';
 import 'package:iPocket/pages/login_register/saving_profile_screen.dart';
 import 'package:iPocket/pages/login_register/sign_up_screen.dart';
 import 'package:iPocket/pages/profile/profile_page.dart';
+import 'package:iPocket/pages/quests/current_quests_page.dart';
 import 'package:iPocket/pages/summary/summary.dart';
 import 'package:iPocket/pages/transaction/transaction_page.dart';
 import 'package:iPocket/providers/firebase_options.dart';
@@ -74,6 +75,7 @@ class MyApp extends StatelessWidget {
           "/chatbot": (context) => const ChatbotPage(),
           '/tips_and_tricks': (context) => const TipsAndTricksPage(),
           '/voice-assistant': (context) => const RecorderScreen(),
+          '/quests': (context) => const QuestPage(),
         },
       ),
     );
