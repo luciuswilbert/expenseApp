@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:iPocket/pages/add_expense/add_expense.dart';
-import 'package:iPocket/widgets/custom_three_dot_menu.dart';
+import 'package:ipocket/pages/add_expense/add_expense.dart';
+import 'package:ipocket/widgets/custom_three_dot_menu.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:google_generative_ai/google_generative_ai.dart'; 

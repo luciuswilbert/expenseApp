@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:iPocket/pages/login_register/auth_theme.dart';
-import 'package:iPocket/pages/login_register/profile_setup_page.dart';
-import 'package:iPocket/pages/login_register/reset_password_screen.dart';
-import 'package:iPocket/pages/login_register/responsive_scroll.dart';
-import 'package:iPocket/providers/auth.dart';
-import 'package:iPocket/providers/google.dart';
-import 'package:iPocket/widgets/custom_password_field.dart';
-import 'package:iPocket/widgets/custom_text_field.dart';
+import 'package:ipocket/pages/login_register/auth_theme.dart';
+import 'package:ipocket/pages/login_register/profile_setup_page.dart';
+import 'package:ipocket/pages/login_register/reset_password_screen.dart';
+import 'package:ipocket/pages/login_register/responsive_scroll.dart';
+import 'package:ipocket/providers/auth.dart';
+import 'package:ipocket/providers/google.dart';
+import 'package:ipocket/widgets/custom_password_field.dart';
+import 'package:ipocket/widgets/custom_text_field.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {

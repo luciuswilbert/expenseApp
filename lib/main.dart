@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
-import 'package:iPocket/pages/Onboard/splash_screen.dart';
-import 'package:iPocket/pages/add_expense/add_expense.dart';
-import 'package:iPocket/pages/add_expense/ocr_add_expense.dart';
-import 'package:iPocket/pages/add_expense/voice_assistant_add_expense.dart';
-import 'package:iPocket/pages/home/chatbot_page.dart';
-import 'package:iPocket/pages/home/home_page.dart';
-import 'package:iPocket/pages/home/tips_and_tricks_page.dart';
-import 'package:iPocket/pages/login_register/google_profile.dart';
-import 'package:iPocket/pages/login_register/login_register_screen.dart';
-import 'package:iPocket/pages/login_register/login_screen.dart';
-import 'package:iPocket/pages/login_register/profile_success_screen.dart';
-import 'package:iPocket/pages/login_register/saving_profile_screen.dart';
-import 'package:iPocket/pages/login_register/sign_up_screen.dart';
-import 'package:iPocket/pages/profile/profile_page.dart';
-import 'package:iPocket/pages/summary/summary.dart';
-import 'package:iPocket/pages/transaction/transaction_page.dart';
-import 'package:iPocket/providers/firebase_options.dart';
-import 'package:iPocket/providers/google.dart';
-import 'package:iPocket/widgets/bottom_nav_bar.dart';
+import 'package:ipocket/pages/Onboard/splash_screen.dart';
+import 'package:ipocket/pages/add_expense/add_expense.dart';
+import 'package:ipocket/pages/add_expense/ocr_add_expense.dart';
+import 'package:ipocket/pages/add_expense/voice_assistant_add_expense.dart';
+import 'package:ipocket/pages/home/chatbot_page.dart';
+import 'package:ipocket/pages/home/home_page.dart';
+import 'package:ipocket/pages/home/ihome_page.dart';
+import 'package:ipocket/pages/home/tips_and_tricks_page.dart';
+import 'package:ipocket/pages/login_register/google_profile.dart';
+import 'package:ipocket/pages/login_register/login_register_screen.dart';
+import 'package:ipocket/pages/login_register/login_screen.dart';
+import 'package:ipocket/pages/login_register/profile_success_screen.dart';
+import 'package:ipocket/pages/login_register/saving_profile_screen.dart';
+import 'package:ipocket/pages/login_register/sign_up_screen.dart';
+import 'package:ipocket/pages/profile/profile_page.dart';
+import 'package:ipocket/pages/summary/summary.dart';
+import 'package:ipocket/pages/transaction/transaction_page.dart';
+import 'package:ipocket/providers/firebase_options.dart';
+import 'package:ipocket/providers/google.dart';
+import 'package:ipocket/widgets/bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -74,6 +75,7 @@ class MyApp extends StatelessWidget {
           "/chatbot": (context) => const ChatbotPage(),
           '/tips_and_tricks': (context) => const TipsAndTricksPage(),
           '/voice-assistant': (context) => const RecorderScreen(),
+          "/iHome": (context) => IHomePage(),
         },
       ),
     );

@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:iPocket/pages/summary/bar_chart.dart';
-import 'package:iPocket/pages/summary/pie_chart.dart';
-import 'package:iPocket/pages/summary/summary_logic.dart';
-import 'package:iPocket/utils/transaction_helpers.dart';
+import 'package:ipocket/pages/summary/bar_chart.dart';
+import 'package:ipocket/pages/summary/pie_chart.dart';
+import 'package:ipocket/pages/summary/summary_logic.dart';
+import 'package:ipocket/utils/transaction_helpers.dart';
 
 class SummaryPage extends StatefulWidget {
   const SummaryPage({super.key});

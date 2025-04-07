@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iPocket/main.dart';
+import 'package:ipocket/main.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);

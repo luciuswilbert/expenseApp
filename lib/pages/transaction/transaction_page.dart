@@ -2,9 +2,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:iPocket/pages/add_expense/add_expense.dart';
-import 'package:iPocket/utils/transaction_helpers.dart';
-import 'package:iPocket/widgets/filter_dialog_widget.dart';
+import 'package:ipocket/pages/add_expense/add_expense.dart';
+import 'package:ipocket/utils/transaction_helpers.dart';
+import 'package:ipocket/widgets/filter_dialog_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'transaction_card.dart';

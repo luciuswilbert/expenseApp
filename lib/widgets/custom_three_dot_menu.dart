@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:iPocket/pages/add_expense/add_expense.dart';
-import 'package:iPocket/pages/add_expense/ocr_add_expense.dart';
-import 'package:iPocket/pages/add_expense/voice_assistant_add_expense.dart';
+import 'package:ipocket/pages/add_expense/add_expense.dart';
+import 'package:ipocket/pages/add_expense/ocr_add_expense.dart';
+import 'package:ipocket/pages/add_expense/voice_assistant_add_expense.dart';
 
 class CustomThreeDotMenu extends StatelessWidget {
   final BuildContext context; // Pass context for navigation

@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:iPocket/pages/login_register/responsive_scroll.dart';
-import 'package:iPocket/pages/login_register/sign_up_screen.dart';
+import 'package:ipocket/pages/login_register/responsive_scroll.dart';
+import 'package:ipocket/pages/login_register/sign_up_screen.dart';
 import './login_screen.dart';
 import 'package:flutter/material.dart';
 

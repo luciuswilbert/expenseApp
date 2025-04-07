@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:iPocket/pages/home/tips_and_tricks_page.dart';
-import 'package:iPocket/widgets/curved_bottom_container.dart';
-import 'package:iPocket/widgets/custom_notification.dart';
+import 'package:ipocket/pages/home/tips_and_tricks_page.dart';
+import 'package:ipocket/widgets/curved_bottom_container.dart';
+import 'package:ipocket/widgets/custom_notification.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   String _getGreeting() {
     final hour = DateTime.now().hour; // Get the current hour (0-23)
     if (hour < 10) {
-      return 'Good Morning,'; 
+      return 'Good Morning,';
     } else if (hour < 15) {
       return 'Good Afternoon,';
     } else if (hour < 19) {
@@ -37,21 +37,22 @@ class _HomePageState extends State<HomePage> {
   void _loadUserSettings() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.email)
-          .get();
+      final doc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.email)
+              .get();
       if (doc.exists) {
         final data = doc.data();
         setState(() {
-          
           _selectedCurrency = userProfile!['currency'];
 
           // Convert the budget (if it's a number) to string before setting it
           var budget = data?['budget'];
-          _expenseBudgetController.text = (budget != null) ? budget.toString() : _expenseBudgetController.text;
-          
-     
+          _expenseBudgetController.text =
+              (budget != null)
+                  ? budget.toString()
+                  : _expenseBudgetController.text;
         });
       }
     }
@@ -68,10 +69,11 @@ class _HomePageState extends State<HomePage> {
   void _fetchUserData() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.email)
-          .get();
+      final doc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.email)
+              .get();
 
       if (doc.exists) {
         setState(() {
@@ -81,14 +83,14 @@ class _HomePageState extends State<HomePage> {
       }
     }
   }
-  
 
   @override
   Widget build(BuildContext context) {
     final String greeting = _getGreeting();
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView( // ✅ Ensures full page is scrollable
+      body: SingleChildScrollView(
+        // ✅ Ensures full page is scrollable
         child: Column(
           children: [
             Stack(
@@ -108,12 +110,20 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Text(
                         greeting,
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
                       ),
-                      
+
                       Text(
                         userProfile?['fullName'] ?? '',
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ],
                   ),
@@ -128,12 +138,22 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       const Text(
                         'Total Balance',
-                        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        _selectedCurrency + " " + (userProfile?['budget']?.toString() ?? ''),
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                        _selectedCurrency +
+                            " " +
+                            (userProfile?['budget']?.toString() ?? ''),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ],
                   ),
@@ -142,7 +162,6 @@ class _HomePageState extends State<HomePage> {
             ),
 
             const SizedBox(height: 20), // ✅ Leaves space below the stack
-
             /// ✅ Features Title
             Align(
               alignment: Alignment.centerLeft,
@@ -159,11 +178,10 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-
             /// ✅ Feature Cards (OCR, Chatbot, etc.)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              
+
               child: Wrap(
                 spacing: 16,
                 runSpacing: 16,
@@ -180,8 +198,13 @@ class _HomePageState extends State<HomePage> {
                   _buildFeatureCard(Icons.summarize, "Tips & Tricks", () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const TipsAndTricksPage()),
+                      MaterialPageRoute(
+                        builder: (context) => const TipsAndTricksPage(),
+                      ),
                     );
+                  }),
+                  _buildFeatureCard(Icons.home, "iHome", () {
+                    Navigator.pushNamed(context, "/iHome");
                   }),
                 ],
               ),

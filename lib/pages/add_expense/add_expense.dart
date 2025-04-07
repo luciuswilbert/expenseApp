@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:iPocket/main.dart';
-import 'package:iPocket/utils/transaction_helpers.dart';
-import 'package:iPocket/widgets/custom_three_dot_menu.dart';
+import 'package:ipocket/main.dart';
+import 'package:ipocket/utils/transaction_helpers.dart';
+import 'package:ipocket/widgets/custom_three_dot_menu.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

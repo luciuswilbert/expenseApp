@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:iPocket/widgets/custom_dropdown.dart';
-import 'package:iPocket/widgets/custom_text_field.dart';
-import 'package:iPocket/widgets/custom_toggle.dart';
+import 'package:ipocket/widgets/custom_dropdown.dart';
+import 'package:ipocket/widgets/custom_text_field.dart';
+import 'package:ipocket/widgets/custom_toggle.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
