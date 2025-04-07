@@ -7,6 +7,7 @@ import 'package:iPocket/pages/add_expense/ocr_add_expense.dart';
 import 'package:iPocket/pages/add_expense/voice_assistant_add_expense.dart';
 import 'package:iPocket/pages/home/chatbot_page.dart';
 import 'package:iPocket/pages/home/home_page.dart';
+import 'package:iPocket/pages/home/ihome_page.dart';
 import 'package:iPocket/pages/home/tips_and_tricks_page.dart';
 import 'package:iPocket/pages/login_register/google_profile.dart';
 import 'package:iPocket/pages/login_register/login_register_screen.dart';
@@ -76,6 +77,7 @@ class MyApp extends StatelessWidget {
           '/tips_and_tricks': (context) => const TipsAndTricksPage(),
           '/voice-assistant': (context) => const RecorderScreen(),
           '/quests': (context) => const QuestPage(),
+          "/iHome": (context) => IHomePage(),
         },
       ),
     );
