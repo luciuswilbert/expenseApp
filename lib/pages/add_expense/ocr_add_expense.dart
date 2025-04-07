@@ -205,7 +205,7 @@ class _OCRAddExpensePageState extends State<OCRAddExpensePage> {
       backgroundColor: Color(0xffE8E8E8),
       appBar: AppBar(
         title: const Text(
-          'OCR',
+          'iScan (Scan the Receipt)',
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
         backgroundColor: const Color(0xffDAA520), // Goldenrod

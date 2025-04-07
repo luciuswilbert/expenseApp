@@ -186,13 +186,13 @@ class _HomePageState extends State<HomePage> {
                 spacing: 16,
                 runSpacing: 16,
                 children: [
-                  _buildFeatureCard(Icons.receipt_long, "OCR", () {
+                  _buildFeatureCard(Icons.receipt_long, "iScan", () {
                     Navigator.pushNamed(context, '/ocr');
                   }),
-                  _buildFeatureCard(Icons.chat, "Chatbot", () {
+                  _buildFeatureCard(Icons.chat, "iBot", () {
                     Navigator.pushNamed(context, '/chatbot');
                   }),
-                  _buildFeatureCard(Icons.mic, "Voice Assistant", () {
+                  _buildFeatureCard(Icons.mic, "iSpeak", () {
                     Navigator.pushNamed(context, '/voice-assistant');
                   }),
                   _buildFeatureCard(Icons.summarize, "Tips & Tricks", () {
@@ -203,7 +203,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   }),
-                  _buildFeatureCard(Icons.star_border, "Quests", () {
+                  _buildFeatureCard(Icons.star_border, "iQuests", () {
                     Navigator.pushNamed(context, '/quests');
                   }),
                   _buildFeatureCard(Icons.home, "iHome", () {

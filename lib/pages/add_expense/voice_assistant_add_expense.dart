@@ -157,7 +157,7 @@ class _RecorderScreenState extends State<RecorderScreen> {
       backgroundColor: Color(0xffE8E8E8),
       appBar: AppBar(
         title: const Text(
-          'Voice Assistant',
+          'iSpeak (Voice Assistant)',
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
         backgroundColor: const Color(0xffDAA520), // Goldenrod

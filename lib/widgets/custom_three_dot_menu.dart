@@ -13,10 +13,10 @@ class CustomThreeDotMenu extends StatelessWidget {
     return PopupMenuButton<String>(
       icon: const Icon(Icons.more_vert, color: Colors.black, size: 28),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      color: Colors.white, // ✅ White background for the menu
+      color: Colors.white,
       onSelected: (String value) {
         String? currentRoute =
-            ModalRoute.of(context)?.settings.name; // ✅ Get current route
+            ModalRoute.of(context)?.settings.name;
 
         if (value == "Manual" && currentRoute != '/add_expense') {
           Navigator.pushReplacement(
@@ -28,7 +28,7 @@ class CustomThreeDotMenu extends StatelessWidget {
               ), // ✅ Assign route name
             ),
           );
-        } else if (value == "OCR (Scan the Receipt)" &&
+        } else if (value == "iScan (Scan the Receipt)" &&
             currentRoute != '/ocr_add_expense') {
           Navigator.pushReplacement(
             context,
@@ -37,7 +37,7 @@ class CustomThreeDotMenu extends StatelessWidget {
               settings: const RouteSettings(name: '/ocr_add_expense'),
             ),
           );
-        } else if (value == "AI (Voice Assistant)" &&
+        } else if (value == "iSpeak (Voice Assistant)" &&
             currentRoute != '/ai_voice_assistant') {
           Navigator.pushReplacement(
             context,
@@ -52,11 +52,11 @@ class CustomThreeDotMenu extends StatelessWidget {
           (BuildContext context) => [
             _buildMenuItem("Manual", Icons.edit, Colors.blue),
             _buildMenuItem(
-              "OCR (Scan the Receipt)",
+              "iScan (Scan the Receipt)",
               Icons.camera_alt,
               Colors.green,
             ),
-            _buildMenuItem("AI (Voice Assistant)", Icons.mic, Colors.purple),
+            _buildMenuItem("iSpeak (Voice Assistant)", Icons.mic, Colors.purple),
           ],
     );
   }
