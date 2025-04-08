@@ -33,9 +33,9 @@
    flutter pub get
 4. Set up Firebase:
 - Add your google-services.json to android/app. (Only Support Android for now)
-4. Build and Intsall the App
+4. Build and Install the App
    ```bash
-  flutter run
+   flutter run
 
 
 Lucius Wilbert Tjoa
