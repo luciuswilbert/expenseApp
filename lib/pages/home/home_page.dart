@@ -206,9 +206,9 @@ class _HomePageState extends State<HomePage> {
                   _buildFeatureCard(Icons.star_border, "iQuests", () {
                     Navigator.pushNamed(context, '/quests');
                   }),
-                  _buildFeatureCard(Icons.home, "iHome", () {
-                    Navigator.pushNamed(context, "/iHome");
-                  }),
+                  // _buildFeatureCard(Icons.home, "iHome", () {
+                  //   Navigator.pushNamed(context, "/iHome");
+                  // }),
                 ],
               ),
             ),
