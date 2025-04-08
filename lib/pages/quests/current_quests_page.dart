@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iPocket/main.dart';
+import 'package:iPocket/pages/home/home_page.dart';
 import 'package:iPocket/pages/quests/AddQuestPage.dart';
 import 'package:iPocket/pages/quests/Oldquests.dart';
 import 'package:iPocket/pages/quests/details_dialog.dart';
@@ -27,6 +29,44 @@ class QuestPageState extends State<QuestPage> {
     return difference >= 0 ? '$difference days left' : 'Expired';
   }
 
+  Future<void> updateBudget(double txAmount) async {
+    if (user == null) {
+      print("Error: User is not logged in. Cannot update budget.");
+      // Depending on your app flow, you might want to throw an error
+      // or handle this differently (e.g., navigate to login).
+      return;
+    }else {
+      final doc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user!.email)
+              .get();
+      try {
+        final data = doc.data();
+        final double currentBudget = double.parse(data!['budget']);
+
+        final double newBudget = currentBudget - txAmount; // Result will be double
+        await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user!.email)
+                        .update({
+                          'budget': newBudget.toString(),
+                        });
+
+        print("Budget successfully updated for ${user!.email} to $newBudget"); // Optional: Log success
+
+
+      } catch (e) {
+        // Handle any errors during the transaction (network, permissions, thrown exceptions)
+        print("Failed to update budget for ${user!.email}: $e");
+        // Depending on requirements, you might want to:
+        // - Show an error message to the user
+        // - Log the error to a monitoring service
+        // - Rethrow the error if needed: throw e;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (user == null) {
@@ -38,6 +78,18 @@ class QuestPageState extends State<QuestPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black), // Standard back arrow icon
+          onPressed: () {
+            // Instead of Navigator.pop(context), navigate explicitly
+            // Option 1: Push and remove history (often best for this scenario)
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()), // Replace with YOUR target page
+              (Route<dynamic> route) => false, // This predicate removes all previous routes
+            );
+          },
+        ),
         centerTitle: true,
         title: const Text(
           'Current Quests',
@@ -144,6 +196,7 @@ class QuestPageState extends State<QuestPage> {
                               .update({
                             'savedAmount': quest['savedAmount'] + amount,
                           });
+                          updateBudget(amount);
                           print('Added $amount to quest');
                         },
                         onDeleteQuest: () async {

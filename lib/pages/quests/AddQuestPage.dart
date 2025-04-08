@@ -115,6 +115,44 @@ class _AddQuestPageState extends State<AddQuestPage> {
     return '#${color.value.toRadixString(16).padLeft(8, '0').substring(2)}';
   }
 
+  Future<void> updateBudget(double txAmount) async {
+    if (user == null) {
+      print("Error: User is not logged in. Cannot update budget.");
+      // Depending on your app flow, you might want to throw an error
+      // or handle this differently (e.g., navigate to login).
+      return;
+    }else {
+      final doc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user!.email)
+              .get();
+      try {
+        final data = doc.data();
+        final double currentBudget = double.parse(data!['budget']);
+
+        final double newBudget = currentBudget - txAmount; // Result will be double
+        await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user!.email)
+                        .update({
+                          'budget': newBudget.toString(),
+                        });
+
+        print("Budget successfully updated for ${user!.email} to $newBudget"); // Optional: Log success
+
+
+      } catch (e) {
+        // Handle any errors during the transaction (network, permissions, thrown exceptions)
+        print("Failed to update budget for ${user!.email}: $e");
+        // Depending on requirements, you might want to:
+        // - Show an error message to the user
+        // - Log the error to a monitoring service
+        // - Rethrow the error if needed: throw e;
+      }
+    }
+  }
+
   Future<void> _addQuest() async {
     String questName = _questNameController.text;
     double targetAmount = double.tryParse(_targetAmountController.text) ?? 0;

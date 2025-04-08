@@ -238,13 +238,13 @@ class _RecorderScreenState extends State<RecorderScreen> {
           ElevatedButton(
             onPressed: () async {
               await _categorize();
-              Map<String, dynamic> jsonResponse = jsonDecode( _responseText);
+              Map<String, dynamic> jsonResponse = jsonDecode(_responseText).first;
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => AddExpensePage(
                     expenseCategory: jsonResponse['category'],
-                    totalAmount: jsonResponse['amount'],
+                    totalAmount: double.parse(jsonResponse['amount']),
                     description: jsonResponse['description'],
                   ),
                 ),
