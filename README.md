@@ -29,11 +29,13 @@
    git clone https://github.com/luciuswilbert/expenseApp.git
    cd expenseApp
 2. Download the dependencies
-   ```flutter pub get```
+   ```bash
+   flutter pub get
 4. Set up Firebase:
 - Add your google-services.json to android/app. (Only Support Android for now)
 4. Build and Intsall the App
-   ```flutter run```
+   ```bash
+  flutter run
 
 
 Lucius Wilbert Tjoa
