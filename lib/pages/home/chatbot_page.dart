@@ -112,7 +112,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
 
     final prompt =
         isFirstMessage
-            ? '''You are a helpful AI financial assistant. Here is the user's transaction data in JSON format:$userDataJson
+            ? '''You are a helpful AI financial assistant. Reply using paragraph that has less than 100 words. Here is the user's transaction data in JSON format:$userDataJson
         Now here is their first question:$message
         '''
             : message;

@@ -69,10 +69,7 @@ class _RecorderScreenState extends State<RecorderScreen> {
     if (_isRecorderReady) {
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String path = '${appDocDir.path}/audio.amr';
-      await _recorder!.startRecorder(
-        toFile: path,
-        codec: Codec.amrNB,
-      );
+      await _recorder!.startRecorder(toFile: path, codec: Codec.amrNB);
       setState(() {
         _isRecording = true;
       });
@@ -92,7 +89,8 @@ class _RecorderScreenState extends State<RecorderScreen> {
   Future<void> _transcribe() async {
     if (_recordedFilePath != null) {
       final serviceAccount = ServiceAccount.fromString(
-          await rootBundle.loadString('assets/ipocket-68f39a430624.json'));
+        await rootBundle.loadString('assets/ipocket-68f39a430624.json'),
+      );
       final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
       final config = RecognitionConfig(
         encoding: AudioEncoding.AMR,
@@ -104,40 +102,50 @@ class _RecorderScreenState extends State<RecorderScreen> {
       final audio = File(_recordedFilePath!).readAsBytesSync().toList();
       final response = await speechToText.recognize(config, audio);
       setState(() {
-        _recognizedText =
-            response.results.map((e) => e.alternatives.first.transcript).join('\n');
+        _recognizedText = response.results
+            .map((e) => e.alternatives.first.transcript)
+            .join('\n');
       });
     }
   }
 
   Future<void> _categorize() async {
-    if (_recognizedText.isNotEmpty && _recognizedText != 'Text to be recognized') {
-      final schema = Schema.object(properties: {
-        'category': Schema.enumString(
-          enumValues: [
-            'Shopping',
-            'Subscription',
-            'Food',
-            'Healthcare',
-            'Groceries',
-            'Transportation',
-            'Utilities',
-            'Housing',
-            'Miscellaneous'
-          ],
-          description: 'Expense category chosen from predefined options.',
-          nullable: true,
-        ),
-        'amount': Schema.number(description: 'Expense Total Amount', nullable: true),
-        'description': Schema.string(description: 'Concise description of the expense', nullable: true),
-      });
+    if (_recognizedText.isNotEmpty &&
+        _recognizedText != 'Text to be recognized') {
+      final schema = Schema.object(
+        properties: {
+          'category': Schema.enumString(
+            enumValues: [
+              'Shopping',
+              'Subscription',
+              'Food',
+              'Healthcare',
+              'Groceries',
+              'Transportation',
+              'Utilities',
+              'Housing',
+              'Miscellaneous',
+            ],
+            description: 'Expense category chosen from predefined options.',
+            nullable: true,
+          ),
+          'amount': Schema.number(
+            description: 'Expense Total Amount',
+            nullable: true,
+          ),
+          'description': Schema.string(
+            description: 'Concise description of the expense',
+            nullable: true,
+          ),
+        },
+      );
 
       final model = GenerativeModel(
         model: 'gemini-2.0-flash', // Ensure this is a valid model name
         apiKey: 'AIzaSyDReqVkKB-d5f4U9gr06wdGbsyXrt9Q8eQ',
         generationConfig: GenerationConfig(
           responseMimeType: 'application/json',
-          //responseSchema: schema,
+          responseSchema: schema,
         ),
       );
 
@@ -147,6 +155,7 @@ class _RecorderScreenState extends State<RecorderScreen> {
       final response = await model.generateContent([Content.text(prompt)]);
       setState(() {
         _responseText = response.text ?? 'Error categorizing text';
+        print('Response: $_responseText');
       });
     }
   }
@@ -166,103 +175,109 @@ class _RecorderScreenState extends State<RecorderScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          CustomThreeDotMenu(context: context),
-        ],
+        actions: [CustomThreeDotMenu(context: context)],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          children:[ Container(  
-            width: double.infinity,
-            height: 400,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.white,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 150,
-                  width:300,
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: SingleChildScrollView(
-                    child: Text(
-                      _recognizedText,
-                      style: TextStyle(
-                        color: _recognizedText == 'Text to be recognized'
-                            ? Colors.grey
-                            : Colors.black,
+          children: [
+            Container(
+              width: double.infinity,
+              height: 400,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 150,
+                    width: 300,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Text(
+                        _recognizedText,
+                        style: TextStyle(
+                          color:
+                              _recognizedText == 'Text to be recognized'
+                                  ? Colors.grey
+                                  : Colors.black,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 50),
-                GestureDetector(
-                  onTap: _toggleRecording,
-                  child: Container(
-                    width: 150,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _isRecording ? Colors.red : Color(0xffdaa520),
-                      
-                    ),
-                    child: Icon(
-                      _isRecording ? Icons.stop : Icons.mic,
-                      color: Colors.white,
-                      size: 24,
+                  const SizedBox(height: 50),
+                  GestureDetector(
+                    onTap: _toggleRecording,
+                    child: Container(
+                      width: 150,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _isRecording ? Colors.red : Color(0xffdaa520),
+                      ),
+                      child: Icon(
+                        _isRecording ? Icons.stop : Icons.mic,
+                        color: Colors.white,
+                        size: 24,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30),
-            child: Text(
-              'Speak clearly to record your expense (E.g. I bought a pizza for 30 ringit)',
-              style: TextStyle(color: Colors.red, fontSize: 14),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () async {
-              await _categorize();
-              Map<String, dynamic> jsonResponse = jsonDecode(_responseText).first;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddExpensePage(
-                    expenseCategory: jsonResponse['category'],
-                    totalAmount: double.parse(jsonResponse['amount']),
-                    description: jsonResponse['description'],
-                  ),
-                ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xffDAA520), // ✅ Goldenrod color
-              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12), // ✅ Same rounded style
+                ],
               ),
             ),
-            child: const Text(
-              'Submit',
-              style: TextStyle(color: Colors.white, fontSize: 16),
+            const SizedBox(height: 12),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              child: Text(
+                'Speak clearly to record your expense (E.g. I bought a pizza for 30 ringit)',
+                style: TextStyle(color: Colors.red, fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
-        ],)
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                await _categorize();
+                Map<String, dynamic> jsonResponse = jsonDecode(_responseText);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => AddExpensePage(
+                          expenseCategory: jsonResponse['category'],
+                          totalAmount: jsonResponse['amount'],
+                          description: jsonResponse['description'],
+                        ),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xffDAA520), // ✅ Goldenrod color
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 50,
+                  vertical: 15,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    12,
+                  ), // ✅ Same rounded style
+                ),
+              ),
+              child: const Text(
+                'Submit',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
